@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.7.0  Built on : Jan 18, 2016 (09:41:27 GMT) -->
+<serviceGroup>
+    <service name="Goku">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only" class="org.apache.ws.axis2.GokuMessageReceiverInOnly"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.apache.ws.axis2.GokuMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">org.apache.ws.axis2.GokuSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="comprobarApuesta" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:comprobarApuesta</actionMapping>
+            <outputActionMapping>urn:comprobarApuestaResponse</outputActionMapping>
+        </operation>
+        <operation name="apuestaFinalizada" mep="http://www.w3.org/ns/wsdl/in-only" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:apuestaFinalizada</actionMapping>
+        </operation>
+        <operation name="listarPartidos" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:listarPartidos</actionMapping>
+            <outputActionMapping>urn:listarPartidosResponse</outputActionMapping>
+        </operation>
+        <operation name="apostarPartido" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:apostarPartido</actionMapping>
+            <outputActionMapping>urn:apostarPartidoResponse</outputActionMapping>
+        </operation>
+        <operation name="apostarPichichi" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:apostarPichichi</actionMapping>
+            <outputActionMapping>urn:apostarPichichiResponse</outputActionMapping>
+        </operation>
+        <operation name="listarEquipos" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:listarEquipos</actionMapping>
+            <outputActionMapping>urn:listarEquiposResponse</outputActionMapping>
+        </operation>
+        <operation name="listarJugadoresEquipo" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:listarJugadoresEquipo</actionMapping>
+            <outputActionMapping>urn:listarJugadoresEquipoResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>
