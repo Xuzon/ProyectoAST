@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,9 @@ public class Goku {
 	
 	//Nombre y localización del fichero para almacenar los importes de cada apuesta y datos de la tarjeta.
 	private static final String fichero_imp_apuestas = "/home/bruno/AST/db/importe_apuestas.txt";
+	
+	//Nombre y localización del fichero de logs para este programa.
+	private static final String fichero_log = "/home/bruno/AST/db/log.txt";
 	
 	/**
 	 * Permite ver los datos de una apuesta en concreto (tipo, importe apostado, número de tarjeta, fecha caducidad de la tarjeta)
@@ -54,7 +58,7 @@ public class Goku {
 		 }
 		catch(IOException ioe)
 		 {
-			ioe.printStackTrace();
+			log(ioe.toString());
 		 }
 		finally
 		 {
@@ -67,7 +71,7 @@ public class Goku {
 			 }
 			catch (Exception e2)
 			 {
-				e2.printStackTrace();
+				log(e2.toString());
 				return null;
 			 }
 		 }
@@ -89,7 +93,42 @@ public class Goku {
 		 }
 		catch(Exception e1)
 		 {
-				e1.printStackTrace();
+				log(e1.toString());
+		 }
+		finally
+		 {
+			try
+				 {
+				if( null != out )
+				 {
+					out.close();
+				 }
+			 }
+			catch (Exception e2)
+			 {
+				log(e2.toString());
+			 }
+		 }
+	 }
+	
+	
+	/**
+	 * Método para almacenar una linea de error en el fichero de log del programa.
+	 * Se añade la fecha y hora del error, así como el nombre del programa desde el que se ha generado.
+	 * @param datos -> Información del error.
+	 */
+	private static void log(String datos)
+	 {
+		BufferedWriter out = null;
+		try
+		 {
+			Date fecha = new Date();
+			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out.write(fecha+":"+" Goku -- "+datos+"\n");
+		 }
+		catch(Exception e1)
+		 {
+			e1.printStackTrace();
 		 }
 		finally
 		 {
@@ -107,6 +146,11 @@ public class Goku {
 		 }
 	 }
 	
+	
+	
+	
+	
+	
 	/**
 	 * Permite realizar una apuesta por un partido. Realizará el cobro de la apuesta y en caso de ser correcto realizará
 	 *  la apuesta y almacenará los datos de la misma para un posterior reenbolso en caso de ser necesario.
@@ -120,30 +164,56 @@ public class Goku {
 	 */
 	public int apostarPartido(int id_p, int goles_e1, int goles_e2, double importe, String tarjeta, String f_cad)
 	 {
-		int id_a=0;
+		int id_a=0, error=0;
 		importe = Math.rint(importe*100)/100;
+		
+		OMElement res_pago = null;
+		
+		ServiceClient sc = null;
+		Options opts = null;
+		
 		try
 		 {
 			//POSTUREO, NO TOCAR.
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 			
 			//Instanciamos el servicio de cliente y las opciones
-			ServiceClient sc = new ServiceClient();
-			Options opts = new Options();
+			sc = new ServiceClient();
+			opts = new Options();
 			
 			//Asignamos en las opciones la referencia al servicio interno de pagos.
 			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Gohan"));
+			opts.setAction("realizarPago");
 			sc.setOptions(opts);
-			OMElement res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
 			
-			//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
-			if(!res_pago.getFirstElement().getText().equals("1"))
-			 {
-				return -1;
-			 }
+			res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
+			error = Integer.parseInt(res_pago.getFirstElement().getText());
 			
+			sc.cleanupTransport();
+
+		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -10;
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+			return -11;
+		 }
+		
+		//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
+		if(error!=1)
+		 {
+			return error;
+		 }
+			
+		try
+		 {
 			//Asignamos en las opciones la referencia al servicio interno de realización de apuestas.
 			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+			opts.setAction("realizarApuestaPartido");
 			sc.setOptions(opts);
 			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+""));
 			
@@ -153,15 +223,20 @@ public class Goku {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -12;
+		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -1;
+			log(e.toString());
+			return -13;
 		 }
 		
 		//Si el id de apuesta es negativo es que ha sucedido algún error.
 		if(id_a<0)
-			return -1;
+			return -14;
 		
 		//Almacenamos la apuesta en el fichero. Para poder identificar el tipo de apuesta, para apuesta de partido señalizamos con una "A".
 		guardarApuesta(id_a, "A//"+importe+"//"+tarjeta+"//"+f_cad);
@@ -180,30 +255,53 @@ public class Goku {
 	 */
 	public int apostarPichichi(String jugador, double importe, String tarjeta, String f_cad)
 	 {
-		int id_a=0;
+		int id_a=0, error=0;
+		OMElement res_pago = null;
 		importe = Math.rint(importe*100)/100;
+		
+		ServiceClient sc = null;
+		Options opts = null;
+		
 		try
 		 {
 			//POSTUREO, NO TOCAR.
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 			
 			//Instanciamos el servicio de cliente y las opciones
-			ServiceClient sc = new ServiceClient();
-			Options opts = new Options();
+			sc = new ServiceClient();
+			opts = new Options();
 			
 			//Asignamos en las opciones la referencia al servicio interno de pagos.
+			opts.setAction("realizarPago");
 			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Gohan"));
 			sc.setOptions(opts);
-			OMElement res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
 			
-			//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
-			if(!res_pago.getFirstElement().getText().equals("1"))
-			 {
-				return -1;
-			 }
-			
+			res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
+			error = Integer.parseInt(res_pago.getFirstElement().getText());
+		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -10;
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+			return -11;
+		 }
+		
+		//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
+		if(error != 1)
+		 {
+			return error;
+		 }
+		
+		try
+		 {
 			//Asignamos en las opciones la referencia al servicio externo.
 			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+			opts.setAction("realizarApuestaPichichi");
+
 			sc.setOptions(opts);
 			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador));
 			
@@ -213,15 +311,20 @@ public class Goku {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -12;
+		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -1;
+			log(e.toString());
+			return -13;
 		 }
 		
 		//Si el id de apuesta es negativo es que ha sucedido algún error.
 		if(id_a<0)
-			return -1;
+			return -14;
 		
 		//Almacenamos la apuesta en el fichero. Para poder identificar el tipo de apuesta, para apuesta de pichichi señalizamos con una "B".
 		guardarApuesta(id_a, "B//"+importe+"//"+tarjeta+"//"+f_cad);
@@ -266,6 +369,8 @@ public class Goku {
 				
 				//Asignamos en las opciones la referencia al servicio interno de pagos.
 				opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Gohan"));
+				opts.setAction("abonarImporte");
+				
 				sc.setOptions(opts);
 				OMElement res_pago = sc.sendReceive(abonarImporte(tarjeta, importe_pagar+"", f_cad));
 				
@@ -273,15 +378,16 @@ public class Goku {
 				//Falta implementar en el documento el cobro o no de la apuesta.
 				System.out.println(res_pago.getFirstElement().getText());
 				sc.cleanupTransport();
+				
 			 }
 			catch(AxisFault af)
 			 {
-				af.printStackTrace();
+				log(af.toString());
 				return;
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
+				log(e.toString());
 				return;
 			 }
 		 }
@@ -318,9 +424,10 @@ public class Goku {
 				
 				//Asignamos en las opciones la referencia al servicio externo.
 				opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+				opts.setAction("comprobarApuestaPartido");
 				sc.setOptions(opts);
 				OMElement res = sc.sendReceive(comprobarApuestaPartido(id_a+""));
-				
+								
 				//Obtengo del OMElement el id de apuesta.
 				cuota = Double.parseDouble(res.getFirstElement().getText());
 				
@@ -328,13 +435,18 @@ public class Goku {
 				
 				//Si la cuota es negativa es que ha sucedido algún error.
 				if(cuota<0)
-					return -2;
+					return cuota;
 				
+			 }
+			catch(AxisFault af)
+			 {
+				log(af.toString());
+				return -10;
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
-				return -1;
+				log(e.toString());
+				return -11;
 			 }
 		 }
 		else if(datos.split("//")[0].equals("B"))
@@ -350,9 +462,10 @@ public class Goku {
 				
 				//Asignamos en las opciones la referencia al servicio externo.
 				opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+				opts.setAction("comprobarApuestaPichichi");
 				sc.setOptions(opts);
 				OMElement res = sc.sendReceive(comprobarApuestaPichichi(id_a+""));
-								
+				
 				//Obtengo del OMElement el id de apuesta.
 				cuota = Double.parseDouble(res.getFirstElement().getText());
 				
@@ -360,17 +473,22 @@ public class Goku {
 				
 				//Si la cuota es negativa es que ha sucedido algún error.
 				if(cuota<0)
-					return -2;
+					return cuota;
+			 }
+			catch(AxisFault af)
+			 {
+				log(af.toString());
+				return -12;
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
-				return -1;
+				log(e.toString());
+				return -13;
 			 }
 		 }
 		else
 		 {
-			return -1;
+			return -15;
 		 }
 		
 		try
@@ -379,8 +497,8 @@ public class Goku {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -3;
+			log(e.toString());
+			return -14;
 		 }
 		
 		//Retornamos la ganacia de la apuesta.
@@ -425,7 +543,8 @@ public class Goku {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
+			lista.add(e.toString());
 		 }
 		
 		return lista;
