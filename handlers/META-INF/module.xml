@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<module name ="Log" class="handlers.MyModule">
+  <InFlow>
+    <handler name = "InFlowLogHandler" class="handlers.LogHandler">
+      <order phase="Transport" after="RequestURIBasedDispatcher"
+                    before="SOAPActionBasedDispatcher"/>
+      <parameter name="nombreLog">SUATMMlog.txt</parameter>
+    </handler>
+
+    <handler name = "InFlowHashHandler" class="handlers.HashHandler">
+      <order phase="Transport" after="RequestURIBasedDispatcher"
+                    before="SOAPActionBasedDispatcher"/>
+      <parameter name="enable">TRUE</parameter>
+      <parameter name="funcionAAplicar">NONE</parameter>
+      <parameter name="hash">HASHPRUEBA</parameter>
+      <parameter name="nombreCabeceraHash">hash::</parameter>
+    </handler>
+  </InFlow>
+</module>
