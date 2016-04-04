@@ -1,12 +1,14 @@
 
 
 
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,6 +31,15 @@ public class Goku {
 	//Nombre y localización del fichero para almacenar los importes de cada apuesta y datos de la tarjeta.
 	private static final String fichero_imp_apuestas = "/home/bruno/AST/db/importe_apuestas.txt";
 	
+	//Nombre y localización del fichero de logs para este programa.
+	private static final String fichero_log = "/home/bruno/AST/db/goku_log.txt";
+	
+	//Nombres de los servicios en UDDI
+	private static final String name_service_goten = "Goten";
+	private static final String name_service_gohan = "Gohan";
+	private static final String name_service_mundial = "Mundial";
+	
+	
 	/**
 	 * Permite ver los datos de una apuesta en concreto (tipo, importe apostado, número de tarjeta, fecha caducidad de la tarjeta)
 	 * @param id_a -> Identificador de la Apuesta
@@ -36,7 +47,7 @@ public class Goku {
 	 */
 	private static String verApuesta(String id_a)
 	 {
-		String apuesta="";
+		String apuesta="-1";
 		BufferedReader in = null;
 		try
 		 {
@@ -54,7 +65,7 @@ public class Goku {
 		 }
 		catch(IOException ioe)
 		 {
-			ioe.printStackTrace();
+			log(ioe.toString());
 		 }
 		finally
 		 {
@@ -67,7 +78,7 @@ public class Goku {
 			 }
 			catch (Exception e2)
 			 {
-				e2.printStackTrace();
+				log(e2.toString());
 				return null;
 			 }
 		 }
@@ -89,7 +100,42 @@ public class Goku {
 		 }
 		catch(Exception e1)
 		 {
-				e1.printStackTrace();
+			log(e1.toString());
+		 }
+		finally
+		 {
+			try
+				 {
+				if( null != out )
+				 {
+					out.close();
+				 }
+			 }
+			catch (Exception e2)
+			 {
+				log(e2.toString());
+			 }
+		 }
+	 }
+	
+	
+	/**
+	 * Método para almacenar una linea de error en el fichero de log del programa.
+	 * Se añade la fecha y hora del error, así como el nombre del programa desde el que se ha generado.
+	 * @param datos -> Información del error.
+	 */
+	private static void log(String datos)
+	 {
+		BufferedWriter out = null;
+		try
+		 {
+			Date fecha = new Date();
+			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out.write(fecha+":"+" Goku -- "+datos+"\n");
+		 }
+		catch(Exception e1)
+		 {
+			e1.printStackTrace();
 		 }
 		finally
 		 {
@@ -107,6 +153,7 @@ public class Goku {
 		 }
 	 }
 	
+	
 	/**
 	 * Permite realizar una apuesta por un partido. Realizará el cobro de la apuesta y en caso de ser correcto realizará
 	 *  la apuesta y almacenará los datos de la misma para un posterior reenbolso en caso de ser necesario.
@@ -120,30 +167,61 @@ public class Goku {
 	 */
 	public int apostarPartido(int id_p, int goles_e1, int goles_e2, double importe, String tarjeta, String f_cad)
 	 {
-		int id_a=0;
+		int id_a=0, error=0;
 		importe = Math.rint(importe*100)/100;
+		
+		Servicio Gohan = new Servicio(name_service_gohan);
+		Servicio Goten = new Servicio(name_service_goten);
+		
+		OMElement res_pago = null;
+		ServiceClient sc = null;
+		Options opts = null;
+				
 		try
 		 {
 			//POSTUREO, NO TOCAR.
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 			
 			//Instanciamos el servicio de cliente y las opciones
-			ServiceClient sc = new ServiceClient();
-			Options opts = new Options();
+			sc = new ServiceClient();
+			opts = new Options();
+			
+			opts.setAction("realizarPago");
 			
 			//Asignamos en las opciones la referencia al servicio interno de pagos.
-			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Gohan"));
+			opts.setTo(new EndpointReference(Gohan.getEndpoint()));
 			sc.setOptions(opts);
-			OMElement res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
+
 			
-			//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
-			if(!res_pago.getFirstElement().getText().equals("1"))
-			 {
-				return -1;
-			 }
+			res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
+
+			error = Integer.parseInt(res_pago.getFirstElement().getText());
+			sc.cleanupTransport();
+
+		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -10;
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+			return -11;
+		 }
+		
+		//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
+		if(error!=1)
+		 {
+			return error;
+		 }
+			
+		try
+		 {
+			opts.setAction("realizarApuestaPartido");
 			
 			//Asignamos en las opciones la referencia al servicio interno de realización de apuestas.
-			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+			opts.setTo(new EndpointReference(Goten.getEndpoint()));
 			sc.setOptions(opts);
 			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+""));
 			
@@ -153,15 +231,20 @@ public class Goku {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -12;
+		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -1;
+			log(e.toString());
+			return -13;
 		 }
 		
 		//Si el id de apuesta es negativo es que ha sucedido algún error.
 		if(id_a<0)
-			return -1;
+			return -14;
 		
 		//Almacenamos la apuesta en el fichero. Para poder identificar el tipo de apuesta, para apuesta de partido señalizamos con una "A".
 		guardarApuesta(id_a, "A//"+importe+"//"+tarjeta+"//"+f_cad);
@@ -180,30 +263,58 @@ public class Goku {
 	 */
 	public int apostarPichichi(String jugador, double importe, String tarjeta, String f_cad)
 	 {
-		int id_a=0;
+		int id_a=0, error=0;
 		importe = Math.rint(importe*100)/100;
+		
+		Servicio Gohan = new Servicio(name_service_gohan);
+		Servicio Goten = new Servicio(name_service_goten);
+		
+		ServiceClient sc = null;
+		Options opts = null;
+		
 		try
 		 {
 			//POSTUREO, NO TOCAR.
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 			
 			//Instanciamos el servicio de cliente y las opciones
-			ServiceClient sc = new ServiceClient();
-			Options opts = new Options();
+			sc = new ServiceClient();
+			opts = new Options();
+				
+			opts.setAction("realizarPago");
 			
 			//Asignamos en las opciones la referencia al servicio interno de pagos.
-			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Gohan"));
+			opts.setTo(new EndpointReference(Gohan.getEndpoint()));
 			sc.setOptions(opts);
 			OMElement res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
 			
-			//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
-			if(!res_pago.getFirstElement().getText().equals("1"))
-			 {
-				return -1;
-			 }
+			error = Integer.parseInt(res_pago.getFirstElement().getText());
+			
+		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -10;
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+			return -11;
+		 }
+		
+		//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
+		if(error!=0)
+		 {
+			return error;
+		 }
+		
+		try
+		 {
+			
+			opts.setAction("realizarApuestaPichichi");
 			
 			//Asignamos en las opciones la referencia al servicio externo.
-			opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+			opts.setTo(new EndpointReference(Goten.getEndpoint()));
 			sc.setOptions(opts);
 			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador));
 			
@@ -213,15 +324,20 @@ public class Goku {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -12;
+		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -1;
+			log(e.toString());
+			return -13;
 		 }
 		
 		//Si el id de apuesta es negativo es que ha sucedido algún error.
 		if(id_a<0)
-			return -1;
+			return -14;
 		
 		//Almacenamos la apuesta en el fichero. Para poder identificar el tipo de apuesta, para apuesta de pichichi señalizamos con una "B".
 		guardarApuesta(id_a, "B//"+importe+"//"+tarjeta+"//"+f_cad);
@@ -242,6 +358,9 @@ public class Goku {
 	 {
 		String datos="", apostado_s="", tarjeta="", f_cad="";
 		double apostado=0, importe_pagar=0;
+		
+		Servicio Gohan = new Servicio(name_service_gohan);
+		
 		if(result>1)
 		 {
 			//Obtenemos los datos de la apueta que ha finalizado.
@@ -264,8 +383,10 @@ public class Goku {
 				ServiceClient sc = new ServiceClient();
 				Options opts = new Options();
 				
+				opts.setAction("abonarImporte");
+				
 				//Asignamos en las opciones la referencia al servicio interno de pagos.
-				opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Gohan"));
+				opts.setTo(new EndpointReference(Gohan.getEndpoint()));
 				sc.setOptions(opts);
 				OMElement res_pago = sc.sendReceive(abonarImporte(tarjeta, importe_pagar+"", f_cad));
 				
@@ -276,12 +397,12 @@ public class Goku {
 			 }
 			catch(AxisFault af)
 			 {
-				af.printStackTrace();
+				log(af.toString());
 				return;
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
+				log(e.toString());
 				return;
 			 }
 		 }
@@ -300,10 +421,16 @@ public class Goku {
 		String datos="", importe_s="";
 		double cuota=0, importe=0;
 		
+		Servicio Goten = new Servicio(name_service_goten);
+		
 		//Obtenemos los datos de la apueta
 		datos = verApuesta(id_a+"");
-		importe_s = datos.split("//")[1];
 		
+		if(datos.equals("-1"))
+			return -10;
+		
+		importe_s = datos.split("//")[1];
+
 		//Llamaremos a un método u otro del servicio externo dependiendo del tipo de apuesta que sea.
 		if(datos.split("//")[0].equals("A"))
 		 {
@@ -316,11 +443,13 @@ public class Goku {
 				ServiceClient sc = new ServiceClient();
 				Options opts = new Options();
 				
+				opts.setAction("comprobarApuestaPartido");
+				
 				//Asignamos en las opciones la referencia al servicio externo.
-				opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+				opts.setTo(new EndpointReference(Goten.getEndpoint()));
 				sc.setOptions(opts);
 				OMElement res = sc.sendReceive(comprobarApuestaPartido(id_a+""));
-				
+								
 				//Obtengo del OMElement el id de apuesta.
 				cuota = Double.parseDouble(res.getFirstElement().getText());
 				
@@ -328,13 +457,18 @@ public class Goku {
 				
 				//Si la cuota es negativa es que ha sucedido algún error.
 				if(cuota<0)
-					return -2;
+					return cuota;
 				
+			 }
+			catch(AxisFault af)
+			 {
+				log(af.toString());
+				return -11;
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
-				return -1;
+				log(e.toString());
+				return -12;
 			 }
 		 }
 		else if(datos.split("//")[0].equals("B"))
@@ -348,29 +482,38 @@ public class Goku {
 				ServiceClient sc = new ServiceClient();
 				Options opts = new Options();
 				
+				opts.setAction("comprobarApuestaPichichi");
+				
 				//Asignamos en las opciones la referencia al servicio externo.
-				opts.setTo(new EndpointReference("http://localhost:8080/axis2/services/Goten"));
+				opts.setTo(new EndpointReference(Goten.getEndpoint()));
 				sc.setOptions(opts);
 				OMElement res = sc.sendReceive(comprobarApuestaPichichi(id_a+""));
-								
+				
 				//Obtengo del OMElement el id de apuesta.
 				cuota = Double.parseDouble(res.getFirstElement().getText());
 				
 				sc.cleanupTransport();
 				
+				System.out.println(cuota);
+				
 				//Si la cuota es negativa es que ha sucedido algún error.
 				if(cuota<0)
-					return -2;
+					return cuota;
+			 }
+			catch(AxisFault af)
+			 {
+				log(af.toString());
+				return -13;
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
-				return -1;
+				log(e.toString());
+				return -14;
 			 }
 		 }
 		else
 		 {
-			return -1;
+			return -15;
 		 }
 		
 		try
@@ -379,8 +522,8 @@ public class Goku {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -3;
+			log(e.toString());
+			return -16;
 		 }
 		
 		//Retornamos la ganacia de la apuesta.
@@ -397,6 +540,8 @@ public class Goku {
 	 {
 		ArrayList<String> lista = new ArrayList<String>();
 		
+		Servicio Mundial = new Servicio(name_service_mundial);
+		
 		try
 		 {
 			//POSTUREO, NO TOCAR.
@@ -405,9 +550,9 @@ public class Goku {
 			//Instanciamos el servicio de cliente y las opciones
 			ServiceClient sc = new ServiceClient();
 			Options opts = new Options();
-			
+						
 			//Asignamos en las opciones la referencia al servicio externo.
-			opts.setTo(new EndpointReference("http://footballpool.dataaccess.eu/data/info.wso"));
+			opts.setTo(new EndpointReference(Mundial.getEndpoint()));
 	
 			//Llamamos al servicio GetCardType
 			sc.setOptions(opts);
@@ -425,7 +570,8 @@ public class Goku {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
+			return null;
 		 }
 		
 		return lista;
@@ -441,6 +587,8 @@ public class Goku {
 	 {
 		ArrayList<String> lista = new  ArrayList<String>();
 		
+		Servicio Mundial = new Servicio(name_service_mundial);
+		
 		//En caso de que el equipo sea null o una cadena vacia, llamaremos a un servicio para obtener todos los jugadores de la competición
 		//En otro caso llamaremos al servicio externo que nos proporciona toda la información de un equipo en concreto para extraer los nombre de los jugadores.
 		if(equipo==null || equipo.equals(""))
@@ -455,7 +603,7 @@ public class Goku {
 				Options opts = new Options();
 				
 				//Asignamos en las opciones la referencia al servicio externo.
-				opts.setTo(new EndpointReference("http://footballpool.dataaccess.eu/data/info.wso"));
+				opts.setTo(new EndpointReference(Mundial.getEndpoint()));
 				
 				//Añadimos a la lista los campos del XML obtenidos del servicio, que corresponden con el nombre de los jugadores.
 				sc.setOptions(opts);
@@ -469,7 +617,8 @@ public class Goku {
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
+				log(e.toString());
+				return null;
 			 }
 		 }
 		else
@@ -484,7 +633,7 @@ public class Goku {
 				Options opts = new Options();
 				
 				//Asignamos en las opciones la referencia al servicio externo.
-				opts.setTo(new EndpointReference("http://footballpool.dataaccess.eu/data/info.wso"));
+				opts.setTo(new EndpointReference(Mundial.getEndpoint()));
 				
 				//Añadimos a la lista los campos del XML obtenido del servicio externo correspondientes con los nombres de los jugadores de cada equipo.
 				sc.setOptions(opts);
@@ -506,7 +655,8 @@ public class Goku {
 			 }
 			catch(Exception e)
 			 {
-				e.printStackTrace();
+				log(e.toString());
+				return null;
 			 }
 		 }
 		
@@ -517,13 +667,16 @@ public class Goku {
 	/**
 	 * Listado de los partidos que va a jugar un equipo en concreto, o todos los partidos de la competición
 	 * @param equipo -> Nombre del equipo del que queremos listar sus partidos. En caso de no pasarlo se listará todos los partidos de la competición.
-	 * @return Se devuelve el identificador del partido además de una cadena con los equipos que juegan el partido.
+	 * @return Devuelve un listado de objeto partidos con el identificador del partido además los equipos que juegan en el partido.
 	 */
-	public Map<Integer, String> listarPartidos(String equipo)
+	public ArrayList<Partido> listarPartidos(String equipo)
 	 {
-		Map<Integer, String> mapa = new HashMap<Integer, String>();
+		ArrayList<Partido> listado = new ArrayList<Partido>();
 		int id=0;
-		String equipos="";
+		String local="", visitante="";
+		
+		Servicio Mundial = new Servicio(name_service_mundial);
+		
 		try
 		 {
 			//POSTUREO, NO TOCAR.
@@ -534,7 +687,7 @@ public class Goku {
 			Options opts = new Options();
 			
 			//Asignamos en las opciones la referencia al servicio externo.
-			opts.setTo(new EndpointReference("http://footballpool.dataaccess.eu/data/info.wso"));
+			opts.setTo(new EndpointReference(Mundial.getEndpoint()));
 			
 			//Llamamos al servicio externo para obtener la información de todos los partidos del calendario en la competición.
 			sc.setOptions(opts);
@@ -547,13 +700,12 @@ public class Goku {
 			 {
 				partido = it1.next();
 				id = Integer.parseInt(partido.getFirstElement().getText());
-				equipos = ((OMElement)((OMElement)partido.getChildrenWithLocalName("Team1").next()).getChildrenWithLocalName("sName").next()).getText();
-				equipos += " - ";
-				equipos += ((OMElement)((OMElement)partido.getChildrenWithLocalName("Team2").next()).getChildrenWithLocalName("sName").next()).getText();
+				local = ((OMElement)((OMElement)partido.getChildrenWithLocalName("Team1").next()).getChildrenWithLocalName("sName").next()).getText();
+				visitante = ((OMElement)((OMElement)partido.getChildrenWithLocalName("Team2").next()).getChildrenWithLocalName("sName").next()).getText();
 				
-				if(equipo==null || equipos.toLowerCase().contains(equipo.toLowerCase()) || equipo.equals(""))
+				if(equipo==null || local.toLowerCase().contains(equipo.toLowerCase()) || visitante.toLowerCase().contains(equipo.toLowerCase()) || equipo.equals(""))
 				 {
-					mapa.put(id, equipos);
+					listado.add(new Partido(id, local, visitante));
 				 }
 			 }
 			
@@ -562,9 +714,56 @@ public class Goku {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
+			return null;
 		 }
-		return mapa;
+		return listado;
+	 }
+	
+	
+	/**
+	 * Devuelve un objeto partido a partir de un id de partido.
+	 * @param id_p -> identificador del partido del que queremos obtener la información.
+	 * @return Devuelve un objeto partido con el id y los participantes.
+	 */
+	public Partido getPartido(int id_p)
+	 {
+		int id=0;
+		String local="", visitante="";
+		
+		Servicio Mundial = new Servicio(name_service_mundial);
+		
+		try
+		 {
+			//POSTUREO, NO TOCAR.
+			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
+			
+			//Instanciamos el servicio de cliente y las opciones
+			ServiceClient sc = new ServiceClient();
+			Options opts = new Options();
+			
+			//Asignamos en las opciones la referencia al servicio externo.
+			opts.setTo(new EndpointReference(Mundial.getEndpoint()));
+			
+			//Llamamos al servicio externo para obtener la información de todos los partidos del calendario en la competición.
+			sc.setOptions(opts);
+			OMElement res = sc.sendReceive(gameInfo(id_p+""));
+			OMElement partido = (OMElement)res.getFirstElement();
+			
+			id = Integer.parseInt(partido.getFirstElement().getText());
+			local = ((OMElement)((OMElement)partido.getChildrenWithLocalName("Team1").next()).getChildrenWithLocalName("sName").next()).getText();
+			visitante = ((OMElement)((OMElement)partido.getChildrenWithLocalName("Team2").next()).getChildrenWithLocalName("sName").next()).getText();
+						
+			sc.cleanupTransport();
+			
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+			return null;
+		 }
+		
+		return new Partido(id, local, visitante);
 	 }
 	
 	
@@ -572,7 +771,6 @@ public class Goku {
 	//*************************************************************************************************************************//
 	//				Métodos para contruir el mensaje de llamada a cada servicio tanto propio como externo					   //
 	//*************************************************************************************************************************//
-	
 	
 	private OMElement teams()
 	 {
@@ -601,6 +799,17 @@ public class Goku {
 		return method;
 	 }
 	
+	private OMElement gameInfo(String valor)
+	 {
+		OMFactory fac = OMAbstractFactory.getOMFactory();
+		OMNamespace omNs = fac.createOMNamespace( "http://footballpool.dataaccess.eu", "");
+		OMElement method = fac.createOMElement("GameInfo", omNs);
+		OMElement value = fac.createOMElement("iGameId", omNs);
+		value.setText(valor);
+		method.addChild(value);
+		return method;
+	 }
+	
 	private OMElement allPlayerNames()
 	 {
 		OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -617,7 +826,7 @@ public class Goku {
 		OMFactory fac = OMAbstractFactory.getOMFactory();
 		OMNamespace omNs = fac.createOMNamespace( "", "");
 		OMElement method = fac.createOMElement("realizarApuestaPartido", omNs);
-		OMElement value1 = fac.createOMElement("id_p", omNs);
+		OMElement value1 = fac.createOMElement("id_partido", omNs);
 		value1.setText(valor1);
 		OMElement value2 = fac.createOMElement("goles_e1", omNs);
 		value2.setText(valor2);
@@ -679,7 +888,7 @@ public class Goku {
 		OMFactory fac = OMAbstractFactory.getOMFactory();
 		OMNamespace omNs = fac.createOMNamespace( "", "");
 		OMElement method = fac.createOMElement("comprobarApuestaPartido", omNs);
-		OMElement value = fac.createOMElement("id_a", omNs);
+		OMElement value = fac.createOMElement("id_apuesta", omNs);
 		value.setText(valor);
 		method.addChild(value);
 		return method;
@@ -690,10 +899,12 @@ public class Goku {
 		OMFactory fac = OMAbstractFactory.getOMFactory();
 		OMNamespace omNs = fac.createOMNamespace( "", "");
 		OMElement method = fac.createOMElement("comprobarApuestaPichichi", omNs);
-		OMElement value = fac.createOMElement("id_a", omNs);
+		OMElement value = fac.createOMElement("id_apuesta", omNs);
 		value.setText(valor);
 		method.addChild(value);
 		return method;
 	 }
+	
+	
 	
 }

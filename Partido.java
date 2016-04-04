@@ -45,6 +45,10 @@ public class Partido {
 		this.equipo_visitante = equipo_visitante;
 	}
 	
+	public String getParticipantes() {
+		return equipo_local+" VS "+equipo_visitante;
+	}
+	
 	public String toString() {
 		return id_partido+" --> "+equipo_local+" - "+equipo_visitante;
 	}

@@ -1,6 +1,14 @@
 
 
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -16,8 +24,18 @@ public class Gohan {
 
 	static final String fichero_saldos="/home/bruno/AST/db/saldos.txt";
 	
-	//Listado de los saldos de cada tarjeta de crétido
-	private static HashMap<String, Double> saldos = new HashMap<String, Double>();
+	//Nombres de los servicios en UDDI
+	private static final String name_service_card = "CreditCardValidator ";
+	
+	//Nombre y localización del fichero de logs para este programa.
+	private static final String fichero_log = "/home/bruno/AST/db/gohan_log.txt";
+	
+	ServiceClient sc1;
+	ServiceClient sc2;
+	ServiceClient sc3;
+	ServiceClient sc4;
+	ServiceClient sc5;
+	
 	
 	//Comprobaciones de la tarjeta que modificará el Callback una vez responda el servicio externo.
 	String tipo_tarjeta="";
@@ -25,7 +43,6 @@ public class Gohan {
 	boolean largo=false;
 	boolean fecha=false;
 	boolean mod=false;
-
 	
 	/**
 	 * Permite alterar el saldo de una tarjeta determinada, pasandole un importe tanto negativo como positivo.
@@ -36,7 +53,53 @@ public class Gohan {
 	 * @return Devuelve el saldo resultante de la operación.
 	 */
 	private static double setSaldo(String tarjeta, double importe)
-	 {
+	 {	
+				
+		BufferedReader in = null;
+		BufferedWriter out = null;
+		
+		//Mapa de tarjeta - saldo.
+		HashMap<String, Double> saldos = new HashMap<String, Double>();
+		
+		//Lectura de todos los saldos de tarjeta y carga en el mapa.
+		try
+		 {
+			in = new BufferedReader(new FileReader(fichero_saldos));
+			String l_saldo="";
+			
+			while((l_saldo=in.readLine())!=null)
+			 {
+				if(l_saldo.equals("")) continue;
+				saldos.put(l_saldo.split("-.-")[0], Double.parseDouble(l_saldo.split("-.-")[1]));
+			 }
+		 }
+		catch(IOException ioe)
+		 {
+			log(ioe.toString());
+			return -1;
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+			return -1;
+		 }
+		finally
+		 {
+			try
+			 {
+				if( null != in )
+				 {
+					in.close();
+				 }
+			 }
+			catch (Exception e2)
+			 {
+				log(e2.toString());
+				return -1;
+			 }
+		 }
+		
+		//Modificación del saldo correspondiente.
 		double saldo=0;
 		if(saldos.containsKey(tarjeta))
 		 {
@@ -47,75 +110,80 @@ public class Gohan {
 				saldos.put(tarjeta, saldo);
 			 }
 			else
-				saldo = -1;
+				return -1;
 		 }
 		else
 		 {
 			saldo = 100+importe;
-			if(saldo<0) saldo=0;
+			if(saldo<0) return -1;
 			saldos.put(tarjeta, saldo);
 		 }
 		
+		//Almacenamiento de los saldos en el fichero.
+		try
+		 {
+			out = new BufferedWriter(new FileWriter(fichero_saldos));
+			for(Entry<String, Double> entry: saldos.entrySet())
+			 {
+				out.write(entry.getKey()+"-.-"+entry.getValue()+"\n");
+			 }
+		 }
+		catch(IOException io)
+		 {
+			log(io.toString());
+			return -1;
+		 }
+		finally
+		 {
+			try
+			 {
+				if( null != out )
+				 {
+					out.close();
+				 }
+			 }
+			catch (Exception e2)
+			 {
+				log(e2.toString());
+				return -1;
+			 }
+		 }
 		return saldo;
-		
-		//Intento de controlar saldo en fichero.
-		//Se abandona debido al coste de operaciones, ya que seria necesario reescribir todo el fichero al modificar una sola linea.
-		//Además no es necesario, ya que aunque no sea permanente lo podemos realizar simplemente con un listado.
-		
-		/*
-		String saldo="0";
-		BufferedReader in = null;
+	 }
+
+	
+	/**
+	 * Método para almacenar una linea de error en el fichero de log del programa.
+	 * Se añade la fecha y hora del error, así como el nombre del programa desde el que se ha generado.
+	 * @param datos -> Información del error.
+	 */
+	public static void log(String datos)
+	 {
 		BufferedWriter out = null;
 		try
 		 {
-			//PrintWriter pw = new PrintWriter(new FileWriter(fichero_saldos));
-			in = new BufferedReader(new FileReader(fichero_saldos));
-			out = new BufferedWriter(new FileWriter(fichero_saldos, true));
-			String l_saldo="";
-			
-			while((l_saldo=in.readLine())!=null)
-			 {
-				if(l_saldo.equals("")) continue;
-				if(l_saldo.split("-.-")[0].equals(tarjeta))
-				 {
-					saldo = l_saldo.split("-.-")[1];
-					out.write("modificado");
-					out.flush();
-					out.newLine();
-					break;
-				 }
-			 }
+			Date fecha = new Date();
+			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out.write(fecha+":"+" Gohan -- "+datos+"\n");
 		 }
-		catch(IOException ioe)
+		catch(Exception e1)
 		 {
-			ioe.printStackTrace();
+			e1.printStackTrace();
 		 }
 		finally
 		 {
 			try
 				 {
-				if( null != in )
+				if( null != out )
 				 {
-					in.close();
+					out.close();
 				 }
 			 }
 			catch (Exception e2)
 			 {
 				e2.printStackTrace();
-				return 0;
 			 }
 		 }
-		
-		try
-		 {
-			return Double.parseDouble(saldo);
-		 }
-		catch(Exception e)
-		 {
-			e.printStackTrace();
-			return 0;
-		 }
-		 */
 	 }
 	
 	
@@ -133,22 +201,21 @@ public class Gohan {
 			return -7;
 		
 		//Comentamos para realizar pruebas iniciales, debido al excesivo consumo de tiempo que supone realizar todas las comprobaciones (Estaba hasta os huevos de esperar por esto)
-		//Además de existir problemas con las llamadas asíncronas a estes servicios, queda pendiente realizar mas pruebas.
-		//if(comprobar_tarjeta(tarjeta, f_cad)<0)
-		//	return -6;
+		if(comprobar_tarjeta(tarjeta, f_cad)<0)
+			return -6;
 		//Debido a que está comentado sustituimos por unos parámetro correctos.
-		tipo_tarjeta="VISA";
+		/*tipo_tarjeta="VISA";
 		largo=true;
 		fecha=true;
-		mod=true;
+		mod=true;*/
 		
 		//Imprimimos solo para la realización de pruebas.
-		System.out.println("Resultado de las comprobaciones:");
+		/*System.out.println("Resultado de las comprobaciones:");
 		System.out.println("1. "+tipo_tarjeta);
 		System.out.println("2. "+debito);
 		System.out.println("3. "+largo);
 		System.out.println("4. "+fecha);
-		System.out.println("5. "+mod);
+		System.out.println("5. "+mod);*/
 		
 		
 		//Dependiendo del problema de la tarjeta retornamos con un código de error u otro.
@@ -188,29 +255,29 @@ public class Gohan {
 		double saldo_final=0;
 		
 		//Comentamos para realizar pruebas iniciales, debido al excesivo consumo de tiempo que supone realizar todas las comprobaciones (Estaba hasta os huevos de esperar por esto)
-				//Además de existir problemas con las llamadas asíncronas a estes servicios, queda pendiente realizar mas pruebas.
-		//if(comprobar_tarjeta(tarjeta, f_cad)<0)
-		//	return -6;
+		if(comprobar_tarjeta(tarjeta, f_cad)<0)
+			return -6;
 		//Debido a que está comentado sustituimos por unos parámetro correctos.
-		tipo_tarjeta="VISA";
+		/*tipo_tarjeta="VISA";
 		largo=true;
 		fecha=true;
-		mod=true;
+		mod=true;*/
 		
 		//Imprimimos solo para la realización de pruebas.
-		System.out.println("1. "+tipo_tarjeta);
+		/*System.out.println("1. "+tipo_tarjeta);
 		System.out.println("2. "+debito);
 		System.out.println("3. "+largo);
 		System.out.println("4. "+fecha);
-		System.out.println("5. "+mod);
+		System.out.println("5. "+mod);*/
 		
 		//Dependiendo del problema de la tarjeta retornamos con un código de error u otro.
-		//Las tarjetas solo pueden ser Visa o Mastercard.
-		if(!(tipo_tarjeta.toLowerCase().equals("visa") || tipo_tarjeta.toLowerCase().equals("mastercard")))
-			return -1;
 		
 		if(!largo)
 			return -2;
+		
+		//Las tarjetas solo pueden ser Visa o Mastercard.
+		if(!(tipo_tarjeta.toLowerCase().equals("visa") || tipo_tarjeta.toLowerCase().equals("mastercard")))
+			return -1;
 		
 		if(!fecha)
 			return -3;
@@ -241,7 +308,7 @@ public class Gohan {
 	 */
 	private int comprobar_tarjeta(String tarjeta, String f_cad)
 	 {
-		//Vemos comentado los callback debido a que todavía tenemos problemas con las llamadas asíncronas.
+		Servicio Ccard = new Servicio(name_service_card);
 		
 		try
 		 {
@@ -249,76 +316,64 @@ public class Gohan {
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 			
 			//Instanciamos el servicio de cliente y las opciones
-			ServiceClient sc = new ServiceClient();
-			Options opts = new Options();
+			sc1 = new ServiceClient();
+			sc2 = new ServiceClient();
+			sc3 = new ServiceClient();
+			sc4 = new ServiceClient();
+			sc5 = new ServiceClient();
+			Options opts= new Options();
 			
 			//Asignamos en las opciones la referencia al servicio externo.
-			opts.setTo(new EndpointReference("https://secure.ftipgw.com/ArgoFire/validate.asmx"));
-	
+			opts.setTo(new EndpointReference(Ccard.getEndpoint()));
+			
 			//Llamamos al servicio GetCardType
 			opts.setAction("http://localhost/SmartPayments/GetCardType");
-			sc.setOptions(opts);
-			//Callback_Gohan call1 = new Callback_Gohan(this, 1);
-			//sc.sendReceiveNonBlocking(getCardType(tarjeta), call1);
-			OMElement res1 = sc.sendReceive(getCardType(tarjeta));
-			tipo_tarjeta = res1.getFirstElement().getText();
+			sc1.setOptions(opts);
+			Callback_Gohan call1 = new Callback_Gohan(this, 1);
+			sc1.sendReceiveNonBlocking(getCardType(tarjeta), call1);
+			
 			
 			//Llamamos al servicio IsDebitCard
 			opts.setAction("http://localhost/SmartPayments/IsDebitCard");
-			sc.setOptions(opts);
-			//Callback_Gohan call2 = new Callback_Gohan(this, 2);
-			//sc.sendReceiveNonBlocking(isDebitCard(tarjeta), call2);
-			OMElement res2 = sc.sendReceive(isDebitCard(tarjeta));
-			debito = Boolean.parseBoolean(res2.getFirstElement().getFirstElement().getFirstElement().getText());
+			sc2.setOptions(opts);
+			Callback_Gohan call2 = new Callback_Gohan(this, 2);
+			sc2.sendReceiveNonBlocking(isDebitCard(tarjeta), call2);
 
+			
 			//Llamamos al servicio ValidCardLength
 			opts.setAction("http://localhost/SmartPayments/ValidCardLength");
-			sc.setOptions(opts);
-			//Callback_Gohan call3 = new Callback_Gohan(this, 3);
-			//sc.sendReceiveNonBlocking(validCardLength(tarjeta), call3);
-			OMElement res3 = sc.sendReceive(validCardLength(tarjeta));
-			largo = Boolean.parseBoolean(res3.getFirstElement().getText());
+			sc3.setOptions(opts);
+			Callback_Gohan call3 = new Callback_Gohan(this, 3);
+			sc3.sendReceiveNonBlocking(validCardLength(tarjeta), call3);
 
+			
 			//Llamamos al servicio ValidExpDate
 			opts.setAction("http://localhost/SmartPayments/ValidExpDate");
-			sc.setOptions(opts);
-			//Callback_Gohan call4 = new Callback_Gohan(this, 4);
-			//sc.sendReceiveNonBlocking(validExpDate(f_cad), call4);
-			OMElement res4 = sc.sendReceive(validExpDate(f_cad));
-			fecha = Boolean.parseBoolean(res4.getFirstElement().getText());
-
+			sc4.setOptions(opts);
+			Callback_Gohan call4 = new Callback_Gohan(this, 4);
+			sc4.sendReceiveNonBlocking(validExpDate(f_cad), call4);
+			
+			
 			//Llamamos al servicio ValidMod10
 			opts.setAction("http://localhost/SmartPayments/ValidMod10");
-			sc.setOptions(opts);
-			//Callback_Gohan call5 = new Callback_Gohan(this, 5);
-			//sc.sendReceiveNonBlocking(validMod10(tarjeta), call5);
-			OMElement res5 = sc.sendReceive(validMod10(tarjeta));
-			mod = Boolean.parseBoolean(res5.getFirstElement().getText());
-			sc.cleanupTransport();
+			sc5.setOptions(opts);
+			Callback_Gohan call5 = new Callback_Gohan(this, 5);
+			sc5.sendReceiveNonBlocking(validMod10(tarjeta), call5);			
+			
 			
 			//En caso de las llamadas asíncronas esperamos a que las flags de cada callback se pongan a true.
-			/*
 			while(!(call1.fin && call2.fin && call3.fin && call4.fin && call5.fin))
 			 {
-			 	//Imprimimos los valores de las flags para realizar pruebas.
-				System.out.println("1. "+call1.fin);
-				System.out.println("2. "+call2.fin);
-				System.out.println("3. "+call3.fin);
-				System.out.println("4. "+call4.fin);
-				System.out.println("5. "+call5.fin);
 				Thread.sleep(1000);
-			 }	*/
-			
-			//Debido a problemas con la llamada asincrona mantenemos temporalmente las llamadas síncronas
-			//y comentamos las demás, incluido el callback
+			 }
+
 			
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
 			return -1;
-		 }
-		
+		 }		
 		return 1;
 	 }
 		

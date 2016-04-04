@@ -1,4 +1,5 @@
 
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -6,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -23,6 +25,12 @@ public class Goten {
 	//Nombre del fichero que almacena las apuestas.
 	private static final String fichero_apuestas="/home/bruno/AST/db/apuestas.txt";
 	
+	//Nombre y localización del fichero de logs para este programa.
+	private static final String fichero_log = "/home/bruno/AST/db/goten_log.txt";
+	
+	//Nombres de los servicios en UDDI
+	private static final String name_service_goku = "Goku";
+	private static final String name_service_mundial = "Mundial";
 	
 	/**
 	 * Permite obtener los datos de una determinada apuesta separados por "//".
@@ -34,7 +42,7 @@ public class Goten {
 	 */
 	private static String verApuesta(String id_a)
 	 {
-		String apuesta="";
+		String apuesta="-1";
 		ArrayList<Integer> id = new ArrayList<Integer>();
 		int mayor=0;
 		
@@ -59,7 +67,7 @@ public class Goten {
 		 }
 		catch(IOException ioe)
 		 {
-			ioe.printStackTrace();
+			log(ioe.toString());
 		 }
 		finally
 		 {
@@ -72,7 +80,7 @@ public class Goten {
 			 }
 			catch (Exception e2)
 			 {
-				e2.printStackTrace();
+				log(e2.toString());
 				return null;
 			 }
 		 }
@@ -106,7 +114,43 @@ public class Goten {
 		 }
 		catch(Exception e1)
 		 {
-				e1.printStackTrace();
+			log(e1.toString());
+		 }
+		finally
+		 {
+			try
+				 {
+				if( null != out )
+				 {
+					out.close();
+				 }
+			 }
+			catch (Exception e2)
+			 {
+				log(e2.toString());
+			 }
+		 }
+	 }
+	
+	
+	
+	/**
+	 * Método para almacenar una linea de error en el fichero de log del programa.
+	 * Se añade la fecha y hora del error, así como el nombre del programa desde el que se ha generado.
+	 * @param datos -> Información del error.
+	 */
+	private static void log(String datos)
+	 {
+		BufferedWriter out = null;
+		try
+		 {
+			Date fecha = new Date();
+			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out.write(fecha+":"+" Goten -- "+datos+"\n");
+		 }
+		catch(Exception e1)
+		 {
+			e1.printStackTrace();
 		 }
 		finally
 		 {
@@ -138,8 +182,14 @@ public class Goten {
 		
 		//Obtenemos los datos de la apuesta.
 		apostado = verApuesta(id_a+"");
+		
+		if(apostado.equals("-1"))
+			return -1;
+		
 		String[] datos = apostado.split("//");
 		
+		//Creamos el objeto servicio que nos permitirá obtener el endPoint.
+		Servicio mundial = new Servicio(name_service_mundial);
 		try
 		 {
 			cuota = Double.parseDouble(datos[3]);
@@ -152,8 +202,10 @@ public class Goten {
 			ServiceClient sc = new ServiceClient();
 			Options opts = new Options();
 			
+			opts.setAction("gameInfo");
+			
 			//Asignamos en las opciones la referencia al servicio externo.
-			opts.setTo(new EndpointReference("http://footballpool.dataaccess.eu/data/info.wso"));
+			opts.setTo(new EndpointReference(mundial.getEndpoint()));
 	
 			//Llamamos al servicio GetCardType
 			sc.setOptions(opts);
@@ -166,9 +218,15 @@ public class Goten {
 			goles2 = resultado.split("-")[1];
 			sc.cleanupTransport();
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			return -2;
+		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
+			return -3;
 		 }
 		
 		//En caso de que la apuesta haya sido acertada retornamos la cuota de la apuesta.
@@ -198,8 +256,15 @@ public class Goten {
 		
 		//Obtenemos los datos de la apuesta
 		apostado = verApuesta(id_a+"");
+		if(apostado.equals("-1"))
+			return -4;
+		
 		ArrayList<String> goleadores = new ArrayList<String>();
 		String[] datos = apostado.split("//");
+		
+		//Creamos el objeto servicio que nos permitirá obtener el endPoint.
+		Servicio mundial = new Servicio(name_service_mundial);
+		
 		try
 		 {
 			
@@ -211,13 +276,14 @@ public class Goten {
 			//Instanciamos el servicio de cliente y las opciones
 			sc = new ServiceClient();
 			Options opts = new Options();
+
+			opts.setAction("topGoalScores");
 			
 			//Asignamos en las opciones la referencia al servicio externo.
-			opts.setTo(new EndpointReference("http://footballpool.dataaccess.eu/data/info.wso"));		
+			opts.setTo(new EndpointReference(mundial.getEndpoint()));		
 			
 			//Llamamos al servicio GetCardType
 			sc.setOptions(opts);
-
 			
 			res = sc.sendReceive(topGoalScores());
 			
@@ -232,18 +298,18 @@ public class Goten {
 		 }
 		catch(AxisFault af)
 		 {
-			af.printStackTrace();
-			return -2;
+			log(af.toString());
+			return -5;
 		 }
 		catch(NumberFormatException ne)
 		 {
-			ne.printStackTrace();
-			return -3;
+			log(ne.toString());
+			return -6;
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
-			return -1;
+			log(e.toString());
+			return -7;
 		 }
 	
 		//Si el jugador por el que se a apostado se sitúa de primero en la lista de goleadores se devuelve la cuota integra, en caso de estar en segundo lugar
@@ -289,7 +355,7 @@ public class Goten {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
 			return -1;
 		 }
 		
@@ -324,7 +390,7 @@ public class Goten {
 		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+			log(e.toString());
 			return -1;
 		 }
 		
@@ -342,6 +408,27 @@ public class Goten {
 		return id_a;
 	}
 	
+	
+	/**
+	 * Este método es llamado exclusivamente por el administrador para indicar que a finalizado un partido.
+	 * Comprobará si existe alguna apuesta referente a este partido y llamará a la función apuestaFinalizada del servidor principal
+	 * que llevará a cabo el pago del mismo.
+	 * @param id_p identificador del partido
+	 */
+	public void partidoFinalizado(int id_p)
+	 {
+		
+	 }
+	
+	
+	/**
+	 * Este método es llamado exclusivamente por el administrador para indicar que a finalizado la competición.
+	 * Llamará a la función apuestaFinalizada del servidor principal por cada apuesta, que llevará a cabo el pago.
+	 */
+	public void competicionFinalizada()
+	 {
+		
+	 }
 	
 	
 	//*************************************************************************************************************************//
@@ -370,30 +457,4 @@ public class Goten {
 		method.addChild(value);
 		return method;
 	 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//Pendiente de finalizar.
-	//Hilo para informar de la finalización de un partido.
-	
-	class hiloComprobacion implements Runnable{	
-		public void run(){
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			int id = -1;
-			try{
-			while(true){
-				System.out.println("Introduzca id de partido a terminar, pulse 999 para acabar competición");
-				id = Integer.parseInt(br.readLine());
-			}
-			}catch(IOException io){
-				
-			}
-		}
-	}
-}
+ }
