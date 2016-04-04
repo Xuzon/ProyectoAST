@@ -1,63 +1,116 @@
 /**
- * ApostarPartido.java
+ * Partido.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.0  Built on : Jan 18, 2016 (09:42:13 GMT)
  */
-package org.apache.ws.axis2;
+package org.apache.ws.axis2.xsd;
 
 
 /**
- *  ApostarPartido bean class
+ *  Partido bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
-    public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.apache.org/axis2",
-            "apostarPartido", "ns2");
+public class Partido implements org.apache.axis2.databinding.ADBBean {
+    /* This type was generated from the piece of schema that had
+       name = Partido
+       Namespace URI = http://ws.apache.org/axis2/xsd
+       Namespace Prefix = ns1
+     */
+
+    /**
+     * field for Equipo_local
+     */
+    protected java.lang.String localEquipo_local;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localEquipo_localTracker = false;
+
+    /**
+     * field for Equipo_visitante
+     */
+    protected java.lang.String localEquipo_visitante;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localEquipo_visitanteTracker = false;
 
     /**
      * field for Id_partido
      */
     protected int localId_partido;
 
-    /**
-     * field for Goles_e1
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
      */
-    protected int localGoles_e1;
+    protected boolean localId_partidoTracker = false;
 
     /**
-     * field for Goles_e2
+     * field for Participantes
      */
-    protected int localGoles_e2;
-
-    /**
-     * field for Importe
-     */
-    protected double localImporte;
-
-    /**
-     * field for Tarjeta
-     */
-    protected java.lang.String localTarjeta;
+    protected java.lang.String localParticipantes;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
      *   in the serialized XML
      */
-    protected boolean localTarjetaTracker = false;
+    protected boolean localParticipantesTracker = false;
+
+    public boolean isEquipo_localSpecified() {
+        return localEquipo_localTracker;
+    }
 
     /**
-     * field for F_cad
+     * Auto generated getter method
+     * @return java.lang.String
      */
-    protected java.lang.String localF_cad;
+    public java.lang.String getEquipo_local() {
+        return localEquipo_local;
+    }
 
-    /*  This tracker boolean wil be used to detect whether the user called the set method
-     *   for this attribute. It will be used to determine whether to include this field
-     *   in the serialized XML
+    /**
+     * Auto generated setter method
+     * @param param Equipo_local
      */
-    protected boolean localF_cadTracker = false;
+    public void setEquipo_local(java.lang.String param) {
+        localEquipo_localTracker = true;
+
+        this.localEquipo_local = param;
+    }
+
+    public boolean isEquipo_visitanteSpecified() {
+        return localEquipo_visitanteTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return java.lang.String
+     */
+    public java.lang.String getEquipo_visitante() {
+        return localEquipo_visitante;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param Equipo_visitante
+     */
+    public void setEquipo_visitante(java.lang.String param) {
+        localEquipo_visitanteTracker = true;
+
+        this.localEquipo_visitante = param;
+    }
+
+    public boolean isId_partidoSpecified() {
+        return localId_partidoTracker;
+    }
 
     /**
      * Auto generated getter method
@@ -72,99 +125,32 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
      * @param param Id_partido
      */
     public void setId_partido(int param) {
+        // setting primitive attribute tracker to true
+        localId_partidoTracker = param != java.lang.Integer.MIN_VALUE;
+
         this.localId_partido = param;
     }
 
-    /**
-     * Auto generated getter method
-     * @return int
-     */
-    public int getGoles_e1() {
-        return localGoles_e1;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param Goles_e1
-     */
-    public void setGoles_e1(int param) {
-        this.localGoles_e1 = param;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return int
-     */
-    public int getGoles_e2() {
-        return localGoles_e2;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param Goles_e2
-     */
-    public void setGoles_e2(int param) {
-        this.localGoles_e2 = param;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return double
-     */
-    public double getImporte() {
-        return localImporte;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param Importe
-     */
-    public void setImporte(double param) {
-        this.localImporte = param;
-    }
-
-    public boolean isTarjetaSpecified() {
-        return localTarjetaTracker;
+    public boolean isParticipantesSpecified() {
+        return localParticipantesTracker;
     }
 
     /**
      * Auto generated getter method
      * @return java.lang.String
      */
-    public java.lang.String getTarjeta() {
-        return localTarjeta;
+    public java.lang.String getParticipantes() {
+        return localParticipantes;
     }
 
     /**
      * Auto generated setter method
-     * @param param Tarjeta
+     * @param param Participantes
      */
-    public void setTarjeta(java.lang.String param) {
-        localTarjetaTracker = true;
+    public void setParticipantes(java.lang.String param) {
+        localParticipantesTracker = true;
 
-        this.localTarjeta = param;
-    }
-
-    public boolean isF_cadSpecified() {
-        return localF_cadTracker;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return java.lang.String
-     */
-    public java.lang.String getF_cad() {
-        return localF_cad;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param F_cad
-     */
-    public void setF_cad(java.lang.String param) {
-        localF_cadTracker = true;
-
-        this.localF_cad = param;
+        this.localParticipantes = param;
     }
 
     /**
@@ -178,7 +164,7 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
         final org.apache.axiom.om.OMFactory factory)
         throws org.apache.axis2.databinding.ADBException {
         return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
-                this, MY_QNAME));
+                this, parentQName));
     }
 
     public void serialize(final javax.xml.namespace.QName parentQName,
@@ -202,99 +188,78 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
 
         if (serializeType) {
             java.lang.String namespacePrefix = registerPrefix(xmlWriter,
-                    "http://ws.apache.org/axis2");
+                    "http://ws.apache.org/axis2/xsd");
 
             if ((namespacePrefix != null) &&
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":apostarPartido", xmlWriter);
+                    namespacePrefix + ":Partido", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "apostarPartido", xmlWriter);
+                    "Partido", xmlWriter);
             }
         }
 
-        namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "id_partido", xmlWriter);
+        if (localEquipo_localTracker) {
+            namespace = "http://ws.apache.org/axis2/xsd";
+            writeStartElement(null, namespace, "equipo_local", xmlWriter);
 
-        if (localId_partido == java.lang.Integer.MIN_VALUE) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "id_partido cannot be null!!");
-        } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localId_partido));
-        }
-
-        xmlWriter.writeEndElement();
-
-        namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "goles_e1", xmlWriter);
-
-        if (localGoles_e1 == java.lang.Integer.MIN_VALUE) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "goles_e1 cannot be null!!");
-        } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localGoles_e1));
-        }
-
-        xmlWriter.writeEndElement();
-
-        namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "goles_e2", xmlWriter);
-
-        if (localGoles_e2 == java.lang.Integer.MIN_VALUE) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "goles_e2 cannot be null!!");
-        } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localGoles_e2));
-        }
-
-        xmlWriter.writeEndElement();
-
-        namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "importe", xmlWriter);
-
-        if (java.lang.Double.isNaN(localImporte)) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "importe cannot be null!!");
-        } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localImporte));
-        }
-
-        xmlWriter.writeEndElement();
-
-        if (localTarjetaTracker) {
-            namespace = "http://ws.apache.org/axis2";
-            writeStartElement(null, namespace, "tarjeta", xmlWriter);
-
-            if (localTarjeta == null) {
+            if (localEquipo_local == null) {
                 // write the nil attribute
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "nil", "1",
                     xmlWriter);
             } else {
-                xmlWriter.writeCharacters(localTarjeta);
+                xmlWriter.writeCharacters(localEquipo_local);
             }
 
             xmlWriter.writeEndElement();
         }
 
-        if (localF_cadTracker) {
-            namespace = "http://ws.apache.org/axis2";
-            writeStartElement(null, namespace, "f_cad", xmlWriter);
+        if (localEquipo_visitanteTracker) {
+            namespace = "http://ws.apache.org/axis2/xsd";
+            writeStartElement(null, namespace, "equipo_visitante", xmlWriter);
 
-            if (localF_cad == null) {
+            if (localEquipo_visitante == null) {
                 // write the nil attribute
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "nil", "1",
                     xmlWriter);
             } else {
-                xmlWriter.writeCharacters(localF_cad);
+                xmlWriter.writeCharacters(localEquipo_visitante);
+            }
+
+            xmlWriter.writeEndElement();
+        }
+
+        if (localId_partidoTracker) {
+            namespace = "http://ws.apache.org/axis2/xsd";
+            writeStartElement(null, namespace, "id_partido", xmlWriter);
+
+            if (localId_partido == java.lang.Integer.MIN_VALUE) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "id_partido cannot be null!!");
+            } else {
+                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        localId_partido));
+            }
+
+            xmlWriter.writeEndElement();
+        }
+
+        if (localParticipantesTracker) {
+            namespace = "http://ws.apache.org/axis2/xsd";
+            writeStartElement(null, namespace, "participantes", xmlWriter);
+
+            if (localParticipantes == null) {
+                // write the nil attribute
+                writeAttribute("xsi",
+                    "http://www.w3.org/2001/XMLSchema-instance", "nil", "1",
+                    xmlWriter);
+            } else {
+                xmlWriter.writeCharacters(localParticipantes);
             }
 
             xmlWriter.writeEndElement();
@@ -304,8 +269,8 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
     }
 
     private static java.lang.String generatePrefix(java.lang.String namespace) {
-        if (namespace.equals("http://ws.apache.org/axis2")) {
-            return "ns2";
+        if (namespace.equals("http://ws.apache.org/axis2/xsd")) {
+            return "ns1";
         }
 
         return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -518,9 +483,9 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static ApostarPartido parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
-            ApostarPartido object = new ApostarPartido();
+        public static Partido parse(javax.xml.stream.XMLStreamReader reader)
+            throws java.lang.Exception {
+            Partido object = new Partido();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -552,12 +517,12 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
                         java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
-                        if (!"apostarPartido".equals(type)) {
+                        if (!"Partido".equals(type)) {
                             //find namespace for the prefix
                             java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ApostarPartido) org.apache.ws.axis2.ExtensionMapper.getTypeObject(nsUri,
+                            return (Partido) org.apache.ws.axis2.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -574,7 +539,63 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
 
                 if ((reader.isStartElement() &&
                         new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "id_partido").equals(
+                            "http://ws.apache.org/axis2/xsd", "equipo_local").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "equipo_local").equals(
+                            reader.getName())) {
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                            "nil");
+
+                    if (!"true".equals(nillableValue) &&
+                            !"1".equals(nillableValue)) {
+                        java.lang.String content = reader.getElementText();
+
+                        object.setEquipo_local(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                content));
+                    } else {
+                        reader.getElementText(); // throw away text nodes if any.
+                    }
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName(
+                            "http://ws.apache.org/axis2/xsd", "equipo_visitante").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "equipo_visitante").equals(
+                            reader.getName())) {
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                            "nil");
+
+                    if (!"true".equals(nillableValue) &&
+                            !"1".equals(nillableValue)) {
+                        java.lang.String content = reader.getElementText();
+
+                        object.setEquipo_visitante(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                content));
+                    } else {
+                        reader.getElementText(); // throw away text nodes if any.
+                    }
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName(
+                            "http://ws.apache.org/axis2/xsd", "id_partido").equals(
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "id_partido").equals(
                             reader.getName())) {
@@ -597,9 +618,7 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
                 } // End of if for expected property start element
 
                 else {
-                    // 1 - A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException(
-                        "Unexpected subelement " + reader.getName());
+                    object.setId_partido(java.lang.Integer.MIN_VALUE);
                 }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -607,105 +626,9 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
 
                 if ((reader.isStartElement() &&
                         new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "goles_e1").equals(
+                            "http://ws.apache.org/axis2/xsd", "participantes").equals(
                             reader.getName())) ||
-                        new javax.xml.namespace.QName("", "goles_e1").equals(
-                            reader.getName())) {
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if ("true".equals(nillableValue) ||
-                            "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException(
-                            "The element: " + "goles_e1" + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setGoles_e1(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
-                            content));
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                    // 1 - A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException(
-                        "Unexpected subelement " + reader.getName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "goles_e2").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "goles_e2").equals(
-                            reader.getName())) {
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if ("true".equals(nillableValue) ||
-                            "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException(
-                            "The element: " + "goles_e2" + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setGoles_e2(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
-                            content));
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                    // 1 - A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException(
-                        "Unexpected subelement " + reader.getName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "importe").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "importe").equals(
-                            reader.getName())) {
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if ("true".equals(nillableValue) ||
-                            "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException(
-                            "The element: " + "importe" + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setImporte(org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(
-                            content));
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                    // 1 - A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException(
-                        "Unexpected subelement " + reader.getName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "tarjeta").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "tarjeta").equals(
+                        new javax.xml.namespace.QName("", "participantes").equals(
                             reader.getName())) {
                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "nil");
@@ -714,35 +637,7 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
                             !"1".equals(nillableValue)) {
                         java.lang.String content = reader.getElementText();
 
-                        object.setTarjeta(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                                content));
-                    } else {
-                        reader.getElementText(); // throw away text nodes if any.
-                    }
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "f_cad").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "f_cad").equals(
-                            reader.getName())) {
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if (!"true".equals(nillableValue) &&
-                            !"1".equals(nillableValue)) {
-                        java.lang.String content = reader.getElementText();
-
-                        object.setF_cad(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                        object.setParticipantes(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                 content));
                     } else {
                         reader.getElementText(); // throw away text nodes if any.

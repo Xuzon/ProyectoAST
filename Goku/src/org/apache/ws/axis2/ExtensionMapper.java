@@ -17,14 +17,9 @@ public class ExtensionMapper {
     public static java.lang.Object getTypeObject(
         java.lang.String namespaceURI, java.lang.String typeName,
         javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
-        if ("http://ws.apache.org/namespaces/axis2/map".equals(namespaceURI) &&
-                "entry1".equals(typeName)) {
-            return org.apache.ws.namespaces.axis2.map.Entry1.Factory.parse(reader);
-        }
-
-        if ("http://ws.apache.org/namespaces/axis2/map".equals(namespaceURI) &&
-                "map1".equals(typeName)) {
-            return org.apache.ws.namespaces.axis2.map.Map1.Factory.parse(reader);
+        if ("http://ws.apache.org/axis2/xsd".equals(namespaceURI) &&
+                "Partido".equals(typeName)) {
+            return org.apache.ws.axis2.xsd.Partido.Factory.parse(reader);
         }
 
         throw new org.apache.axis2.databinding.ADBException("Unsupported type " +

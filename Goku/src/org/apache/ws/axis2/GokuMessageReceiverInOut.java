@@ -39,97 +39,106 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
                     ((methodName = org.apache.axis2.util.JavaUtils.xmlNameToJavaIdentifier(
                             op.getName().getLocalPart())) != null)) {
                 if ("comprobarApuesta".equals(methodName)) {
-                    org.apache.ws.axis2.ComprobarApuestaResponse comprobarApuestaResponse28 =
+                    org.apache.ws.axis2.ComprobarApuestaResponse comprobarApuestaResponse32 =
                         null;
                     org.apache.ws.axis2.ComprobarApuesta wrappedParam = (org.apache.ws.axis2.ComprobarApuesta) fromOM(msgContext.getEnvelope()
                                                                                                                                 .getBody()
                                                                                                                                 .getFirstElement(),
                             org.apache.ws.axis2.ComprobarApuesta.class);
 
-                    comprobarApuestaResponse28 = skel.comprobarApuesta(wrappedParam);
+                    comprobarApuestaResponse32 = skel.comprobarApuesta(wrappedParam);
 
                     envelope = toEnvelope(getSOAPFactory(msgContext),
-                            comprobarApuestaResponse28, false,
+                            comprobarApuestaResponse32, false,
                             new javax.xml.namespace.QName(
                                 "http://ws.apache.org/axis2",
                                 "comprobarApuestaResponse"));
-                } else
-                 if ("listarPartidos".equals(methodName)) {
-                    org.apache.ws.axis2.ListarPartidosResponse listarPartidosResponse30 =
+                } else if ("getPartido".equals(methodName)) {
+                    org.apache.ws.axis2.GetPartidoResponse getPartidoResponse34 = null;
+                    org.apache.ws.axis2.GetPartido wrappedParam = (org.apache.ws.axis2.GetPartido) fromOM(msgContext.getEnvelope()
+                                                                                                                    .getBody()
+                                                                                                                    .getFirstElement(),
+                            org.apache.ws.axis2.GetPartido.class);
+
+                    getPartidoResponse34 = skel.getPartido(wrappedParam);
+
+                    envelope = toEnvelope(getSOAPFactory(msgContext),
+                            getPartidoResponse34, false,
+                            new javax.xml.namespace.QName(
+                                "http://ws.apache.org/axis2",
+                                "getPartidoResponse"));
+                } else if ("listarPartidos".equals(methodName)) {
+                    org.apache.ws.axis2.ListarPartidosResponse listarPartidosResponse36 =
                         null;
                     org.apache.ws.axis2.ListarPartidos wrappedParam = (org.apache.ws.axis2.ListarPartidos) fromOM(msgContext.getEnvelope()
                                                                                                                             .getBody()
                                                                                                                             .getFirstElement(),
                             org.apache.ws.axis2.ListarPartidos.class);
 
-                    listarPartidosResponse30 = skel.listarPartidos(wrappedParam);
+                    listarPartidosResponse36 = skel.listarPartidos(wrappedParam);
 
                     envelope = toEnvelope(getSOAPFactory(msgContext),
-                            listarPartidosResponse30, false,
+                            listarPartidosResponse36, false,
                             new javax.xml.namespace.QName(
                                 "http://ws.apache.org/axis2",
                                 "listarPartidosResponse"));
-                } else
-                 if ("apostarPartido".equals(methodName)) {
-                    org.apache.ws.axis2.ApostarPartidoResponse apostarPartidoResponse32 =
+                } else if ("apostarPartido".equals(methodName)) {
+                    org.apache.ws.axis2.ApostarPartidoResponse apostarPartidoResponse38 =
                         null;
                     org.apache.ws.axis2.ApostarPartido wrappedParam = (org.apache.ws.axis2.ApostarPartido) fromOM(msgContext.getEnvelope()
                                                                                                                             .getBody()
                                                                                                                             .getFirstElement(),
                             org.apache.ws.axis2.ApostarPartido.class);
 
-                    apostarPartidoResponse32 = skel.apostarPartido(wrappedParam);
+                    apostarPartidoResponse38 = skel.apostarPartido(wrappedParam);
 
                     envelope = toEnvelope(getSOAPFactory(msgContext),
-                            apostarPartidoResponse32, false,
+                            apostarPartidoResponse38, false,
                             new javax.xml.namespace.QName(
                                 "http://ws.apache.org/axis2",
                                 "apostarPartidoResponse"));
-                } else
-                 if ("apostarPichichi".equals(methodName)) {
-                    org.apache.ws.axis2.ApostarPichichiResponse apostarPichichiResponse34 =
+                } else if ("apostarPichichi".equals(methodName)) {
+                    org.apache.ws.axis2.ApostarPichichiResponse apostarPichichiResponse40 =
                         null;
                     org.apache.ws.axis2.ApostarPichichi wrappedParam = (org.apache.ws.axis2.ApostarPichichi) fromOM(msgContext.getEnvelope()
                                                                                                                               .getBody()
                                                                                                                               .getFirstElement(),
                             org.apache.ws.axis2.ApostarPichichi.class);
 
-                    apostarPichichiResponse34 = skel.apostarPichichi(wrappedParam);
+                    apostarPichichiResponse40 = skel.apostarPichichi(wrappedParam);
 
                     envelope = toEnvelope(getSOAPFactory(msgContext),
-                            apostarPichichiResponse34, false,
+                            apostarPichichiResponse40, false,
                             new javax.xml.namespace.QName(
                                 "http://ws.apache.org/axis2",
                                 "apostarPichichiResponse"));
-                } else
-                 if ("listarEquipos".equals(methodName)) {
-                    org.apache.ws.axis2.ListarEquiposResponse listarEquiposResponse36 =
+                } else if ("listarEquipos".equals(methodName)) {
+                    org.apache.ws.axis2.ListarEquiposResponse listarEquiposResponse42 =
                         null;
                     org.apache.ws.axis2.ListarEquipos wrappedParam = (org.apache.ws.axis2.ListarEquipos) fromOM(msgContext.getEnvelope()
                                                                                                                           .getBody()
                                                                                                                           .getFirstElement(),
                             org.apache.ws.axis2.ListarEquipos.class);
 
-                    listarEquiposResponse36 = skel.listarEquipos(wrappedParam);
+                    listarEquiposResponse42 = skel.listarEquipos(wrappedParam);
 
                     envelope = toEnvelope(getSOAPFactory(msgContext),
-                            listarEquiposResponse36, false,
+                            listarEquiposResponse42, false,
                             new javax.xml.namespace.QName(
                                 "http://ws.apache.org/axis2",
                                 "listarEquiposResponse"));
-                } else
-                 if ("listarJugadoresEquipo".equals(methodName)) {
-                    org.apache.ws.axis2.ListarJugadoresEquipoResponse listarJugadoresEquipoResponse38 =
+                } else if ("listarJugadoresEquipo".equals(methodName)) {
+                    org.apache.ws.axis2.ListarJugadoresEquipoResponse listarJugadoresEquipoResponse44 =
                         null;
                     org.apache.ws.axis2.ListarJugadoresEquipo wrappedParam = (org.apache.ws.axis2.ListarJugadoresEquipo) fromOM(msgContext.getEnvelope()
                                                                                                                                           .getBody()
                                                                                                                                           .getFirstElement(),
                             org.apache.ws.axis2.ListarJugadoresEquipo.class);
 
-                    listarJugadoresEquipoResponse38 = skel.listarJugadoresEquipo(wrappedParam);
+                    listarJugadoresEquipoResponse44 = skel.listarJugadoresEquipo(wrappedParam);
 
                     envelope = toEnvelope(getSOAPFactory(msgContext),
-                            listarJugadoresEquipoResponse38, false,
+                            listarJugadoresEquipoResponse44, false,
                             new javax.xml.namespace.QName(
                                 "http://ws.apache.org/axis2",
                                 "listarJugadoresEquipoResponse"));
@@ -161,6 +170,28 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
             return param.getOMElement(org.apache.ws.axis2.ComprobarApuestaResponse.MY_QNAME,
+                org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+        } catch (org.apache.axis2.databinding.ADBException e) {
+            throw org.apache.axis2.AxisFault.makeFault(e);
+        }
+    }
+
+    private org.apache.axiom.om.OMElement toOM(
+        org.apache.ws.axis2.GetPartido param, boolean optimizeContent)
+        throws org.apache.axis2.AxisFault {
+        try {
+            return param.getOMElement(org.apache.ws.axis2.GetPartido.MY_QNAME,
+                org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+        } catch (org.apache.axis2.databinding.ADBException e) {
+            throw org.apache.axis2.AxisFault.makeFault(e);
+        }
+    }
+
+    private org.apache.axiom.om.OMElement toOM(
+        org.apache.ws.axis2.GetPartidoResponse param, boolean optimizeContent)
+        throws org.apache.axis2.AxisFault {
+        try {
+            return param.getOMElement(org.apache.ws.axis2.GetPartidoResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -309,6 +340,30 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
 
     private org.apache.ws.axis2.ComprobarApuestaResponse wrapcomprobarApuesta() {
         org.apache.ws.axis2.ComprobarApuestaResponse wrappedElement = new org.apache.ws.axis2.ComprobarApuestaResponse();
+
+        return wrappedElement;
+    }
+
+    private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
+        org.apache.axiom.soap.SOAPFactory factory,
+        org.apache.ws.axis2.GetPartidoResponse param, boolean optimizeContent,
+        javax.xml.namespace.QName elementQName)
+        throws org.apache.axis2.AxisFault {
+        try {
+            org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+
+            emptyEnvelope.getBody()
+                         .addChild(param.getOMElement(
+                    org.apache.ws.axis2.GetPartidoResponse.MY_QNAME, factory));
+
+            return emptyEnvelope;
+        } catch (org.apache.axis2.databinding.ADBException e) {
+            throw org.apache.axis2.AxisFault.makeFault(e);
+        }
+    }
+
+    private org.apache.ws.axis2.GetPartidoResponse wrapgetPartido() {
+        org.apache.ws.axis2.GetPartidoResponse wrappedElement = new org.apache.ws.axis2.GetPartidoResponse();
 
         return wrappedElement;
     }
@@ -472,6 +527,14 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
 
             if (org.apache.ws.axis2.ComprobarApuestaResponse.class.equals(type)) {
                 return org.apache.ws.axis2.ComprobarApuestaResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+            }
+
+            if (org.apache.ws.axis2.GetPartido.class.equals(type)) {
+                return org.apache.ws.axis2.GetPartido.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+            }
+
+            if (org.apache.ws.axis2.GetPartidoResponse.class.equals(type)) {
+                return org.apache.ws.axis2.GetPartidoResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
 
             if (org.apache.ws.axis2.ListarEquipos.class.equals(type)) {

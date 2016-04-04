@@ -14,6 +14,10 @@
             <actionMapping>urn:comprobarApuesta</actionMapping>
             <outputActionMapping>urn:comprobarApuestaResponse</outputActionMapping>
         </operation>
+        <operation name="getPartido" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:getPartido</actionMapping>
+            <outputActionMapping>urn:getPartidoResponse</outputActionMapping>
+        </operation>
         <operation name="apuestaFinalizada" mep="http://www.w3.org/ns/wsdl/in-only" namespace="http://ws.apache.org/axis2">
             <actionMapping>urn:apuestaFinalizada</actionMapping>
         </operation>

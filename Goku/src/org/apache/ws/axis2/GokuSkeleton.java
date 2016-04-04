@@ -7,10 +7,7 @@
 package org.apache.ws.axis2;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-import org.apache.ws.namespaces.axis2.map.Entry1;
-import org.apache.ws.namespaces.axis2.map.Map1;
 
 /**
  *  GokuSkeleton java skeleton for the axisService
@@ -30,7 +27,7 @@ public class GokuSkeleton {
     	ComprobarApuestaResponse ret = new ComprobarApuestaResponse();
     	
     	//Recuperamos los argumentos de entrada.
-    	int id_a = comprobarApuesta.getId_a();
+    	int id_a = comprobarApuesta.getId_apuesta();
     	
     	//Creamos un objecto de la clase del servicio.
     	Goku g = new Goku();
@@ -42,6 +39,45 @@ public class GokuSkeleton {
     	ret.setImporteRecuperado(salida);
     	
     	return ret;
+
+    }
+
+    /**
+     * Auto generated method signature
+     *
+     * @param getPartido
+     * @return getPartidoResponse
+     */
+    public org.apache.ws.axis2.GetPartidoResponse getPartido(
+        org.apache.ws.axis2.GetPartido getPartido) {
+        
+
+    	//Creamos el objecto que debemos retornar.
+    	Partido salida = null;
+    	
+    	GetPartidoResponse ret = new GetPartidoResponse();
+    	
+    	//Recuperamos los argumentos de entrada.
+    	int id_p = getPartido.getId_partido();
+    	
+    	//Creamos un objecto de la clase del servicio.
+    	Goku g = new Goku();
+    	
+    	//Llamamos a la función pasandole los parámetros obtenidos
+    	salida = g.getPartido(id_p);
+    	
+    	//Necesario convertir el ArrayList de salida a un array de string para el servicio SOAP
+    	org.apache.ws.axis2.xsd.Partido salida1 = new org.apache.ws.axis2.xsd.Partido();
+
+    	salida1.setId_partido(salida.getId_partido());
+    	salida1.setEquipo_local(salida.getEquipo_local());
+    	salida1.setEquipo_visitante(salida.getEquipo_visitante());
+    	
+    	//Añadimos al objeto que retornamos la salida de la función.
+    	ret.setPartido(salida1);
+
+    	return ret;
+    	
     }
 
     /**
@@ -52,17 +88,17 @@ public class GokuSkeleton {
      */
     public void apuestaFinalizada(
         org.apache.ws.axis2.ApuestaFinalizada apuestaFinalizada) {
-    	    	
-    	//Recuperamos los argumentos de entrada.
-    	int id_a = apuestaFinalizada.getId_apuesta();
-    	double cuota_resultante = apuestaFinalizada.getCuota_resultante();
-    	
-    	//Creamos un objecto de la clase del servicio.
-    	Goku g = new Goku();
-    	
-    	//Llamamos a la función pasandole los parámetros obtenidos
-    	g.apuestaFinalizada(id_a, cuota_resultante);
-    	
+		    	
+		//Recuperamos los argumentos de entrada.
+		int id_a = apuestaFinalizada.getId_apuesta();
+		double cuota_resultante = apuestaFinalizada.getCuota_resultante();
+		
+		//Creamos un objecto de la clase del servicio.
+		Goku g = new Goku();
+		
+		//Llamamos a la función pasandole los parámetros obtenidos
+		g.apuestaFinalizada(id_a, cuota_resultante);
+		
     }
 
     /**
@@ -75,33 +111,34 @@ public class GokuSkeleton {
         org.apache.ws.axis2.ListarPartidos listarPartidos) {
     	
     	//Creamos el objecto que debemos retornar.
-    	Map<Integer, String> salida = null;
+    	ArrayList<Partido> salida = null;
     	
     	ListarPartidosResponse ret = new ListarPartidosResponse();
     	
     	//Recuperamos los argumentos de entrada.
     	String equipo = listarPartidos.getEquipo();
+    	
     	//Creamos un objecto de la clase del servicio.
     	Goku g = new Goku();
     	
     	//Llamamos a la función pasandole los parámetros obtenidos
     	salida = g.listarPartidos(equipo);
     	
-    	//Es necesario combertir el HashMap de salida de la función a un Mapa definido para el mensaje SOAP.
-    	Map1 salida1 = new Map1();
-    	Entry1 entry1 = null;
-
-    	for(Map.Entry<Integer, String> entry : salida.entrySet())
+    	//Necesario convertir el ArrayList de salida a un array de string para el servicio SOAP
+    	org.apache.ws.axis2.xsd.Partido[] salida1 = new org.apache.ws.axis2.xsd.Partido[salida.size()];
+    	
+    	
+    	for(int i=0; i<salida.size(); i++)
     	 {
-    		entry1 = new Entry1();
-    		entry1.setId_partido(entry.getKey());
-    		entry1.setParticipantes(entry.getValue());
-    		salida1.addPartido(entry1);
+    		salida1[i] = new org.apache.ws.axis2.xsd.Partido();
+    		salida1[i].setId_partido(salida.get(i).getId_partido());
+    		salida1[i].setEquipo_local(salida.get(i).getEquipo_local());
+    		salida1[i].setEquipo_visitante(salida.get(i).getEquipo_visitante());
     	 }
     	
     	//Añadimos al objeto que retornamos la salida de la función.
     	ret.setPartidos(salida1);
-    	
+
     	return ret;
     }
 
@@ -113,32 +150,31 @@ public class GokuSkeleton {
      */
     public org.apache.ws.axis2.ApostarPartidoResponse apostarPartido(
         org.apache.ws.axis2.ApostarPartido apostarPartido) {
-       
-    	//Creamos el objecto que debemos retornar.
-    	int salida = 0;
-    	
-    	ApostarPartidoResponse ret = new ApostarPartidoResponse();
-    	
-    	//Recuperamos los argumentos de entrada.
-    	int id_p = apostarPartido.getId_p();
-    	int goles_e1 = apostarPartido.getGoles_e1();
-    	int goles_e2 = apostarPartido.getGoles_e2();
-    	double importe = apostarPartido.getImporte();
-    	String tarjeta = apostarPartido.getTarjeta();
-    	String f_cad = apostarPartido.getF_cad();
-    	
-    	//Creamos un objecto de la clase del servicio.
-    	Goku g = new Goku();
-    	
-    	//Llamamos a la función pasandole los parámetros obtenidos
-    	salida = g.apostarPartido(id_p, goles_e1, goles_e2, importe, tarjeta, f_cad);
+        
+     	//Creamos el objecto que debemos retornar.
+     	int salida = 0;
+     	
+     	ApostarPartidoResponse ret = new ApostarPartidoResponse();
+     	
+     	//Recuperamos los argumentos de entrada.
+     	int id_p = apostarPartido.getId_partido();
+     	int goles_e1 = apostarPartido.getGoles_e1();
+     	int goles_e2 = apostarPartido.getGoles_e2();
+     	double importe = apostarPartido.getImporte();
+     	String tarjeta = apostarPartido.getTarjeta();
+     	String f_cad = apostarPartido.getF_cad();
+     	
+     	//Creamos un objecto de la clase del servicio.
+     	Goku g = new Goku();
+     	
+     	//Llamamos a la función pasandole los parámetros obtenidos
+     	salida = g.apostarPartido(id_p, goles_e1, goles_e2, importe, tarjeta, f_cad);
 
 
-    	//Añadimos al objeto que retornamos la salida de la función.   	
-    	ret.setId_apuesta(salida);
-    	
-    	return ret;
-    	
+     	//Añadimos al objeto que retornamos la salida de la función.   	
+     	ret.setId_apuesta(salida);
+     	
+     	return ret;
     }
 
     /**
@@ -193,7 +229,7 @@ public class GokuSkeleton {
     	//Llamamos a la función pasandole los parámetros obtenidos
     	salida = g.listarEquipos();
     	
-    	//Necesario combertir el ArrayList de salida a un array de string para el servicio SOAP
+    	//Necesario convertir el ArrayList de salida a un array de string para el servicio SOAP
     	String[] salida1 = new String[salida.size()];
 
     	//Añadimos al objeto que retornamos la salida de la función.
@@ -210,7 +246,7 @@ public class GokuSkeleton {
      */
     public org.apache.ws.axis2.ListarJugadoresEquipoResponse listarJugadoresEquipo(
         org.apache.ws.axis2.ListarJugadoresEquipo listarJugadoresEquipo) {
-    	
+
     	//Creamos el objecto que debemos retornar.
     	ArrayList<String> salida = null;
     	ListarJugadoresEquipoResponse ret = new ListarJugadoresEquipoResponse();
@@ -224,7 +260,7 @@ public class GokuSkeleton {
     	//Llamamos a la función pasandole los parámetros obtenidos
     	salida = g.listarJugadoresEquipo(equipo);
     	
-    	//Necesario combertir el ArrayList de salida a un array de string para el servicio SOAP
+    	//Necesario convertir el ArrayList de salida a un array de string para el servicio SOAP
     	String[] salida1 = new String[salida.size()];
     	
     	//Añadimos al objeto que retornamos la salida de la función.

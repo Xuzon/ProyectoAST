@@ -1,80 +1,24 @@
 /**
- * ListarPartidosResponse.java
+ * Partido.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.0  Built on : Jan 18, 2016 (09:42:13 GMT)
  */
-package org.apache.ws.axis2;
+package org.apache.ws.axis2.xsd;
 
 
 /**
- *  ListarPartidosResponse bean class
+ *  Partido bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBBean {
-    public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.apache.org/axis2",
-            "listarPartidosResponse", "ns2");
-
-    /**
-     * field for Partidos
-     * This was an Array!
+public abstract class Partido implements org.apache.axis2.databinding.ADBBean {
+    /* This type was generated from the piece of schema that had
+       name = Partido
+       Namespace URI = http://ws.apache.org/axis2/xsd
+       Namespace Prefix = ns1
      */
-    protected org.apache.ws.axis2.xsd.Partido[] localPartidos;
-
-    /*  This tracker boolean wil be used to detect whether the user called the set method
-     *   for this attribute. It will be used to determine whether to include this field
-     *   in the serialized XML
-     */
-    protected boolean localPartidosTracker = false;
-
-    public boolean isPartidosSpecified() {
-        return localPartidosTracker;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return org.apache.ws.axis2.xsd.Partido[]
-     */
-    public org.apache.ws.axis2.xsd.Partido[] getPartidos() {
-        return localPartidos;
-    }
-
-    /**
-     * validate the array for Partidos
-     */
-    protected void validatePartidos(org.apache.ws.axis2.xsd.Partido[] param) {
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param Partidos
-     */
-    public void setPartidos(org.apache.ws.axis2.xsd.Partido[] param) {
-        validatePartidos(param);
-
-        localPartidosTracker = true;
-
-        this.localPartidos = param;
-    }
-
-    /**
-     * Auto generated add method for the array for convenience
-     * @param param org.apache.ws.axis2.xsd.Partido
-     */
-    public void addPartidos(org.apache.ws.axis2.xsd.Partido param) {
-        if (localPartidos == null) {
-            localPartidos = new org.apache.ws.axis2.xsd.Partido[] {  };
-        }
-
-        //update the setting tracker
-        localPartidosTracker = true;
-
-        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localPartidos);
-        list.add(param);
-        this.localPartidos = (org.apache.ws.axis2.xsd.Partido[]) list.toArray(new org.apache.ws.axis2.xsd.Partido[list.size()]);
-    }
 
     /**
      *
@@ -87,7 +31,7 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
         final org.apache.axiom.om.OMFactory factory)
         throws org.apache.axis2.databinding.ADBException {
         return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
-                this, MY_QNAME));
+                this, parentQName));
     }
 
     public void serialize(final javax.xml.namespace.QName parentQName,
@@ -111,47 +55,17 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
 
         if (serializeType) {
             java.lang.String namespacePrefix = registerPrefix(xmlWriter,
-                    "http://ws.apache.org/axis2");
+                    "http://ws.apache.org/axis2/xsd");
 
             if ((namespacePrefix != null) &&
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":listarPartidosResponse", xmlWriter);
+                    namespacePrefix + ":Partido", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "listarPartidosResponse", xmlWriter);
-            }
-        }
-
-        if (localPartidosTracker) {
-            if (localPartidos != null) {
-                for (int i = 0; i < localPartidos.length; i++) {
-                    if (localPartidos[i] != null) {
-                        localPartidos[i].serialize(new javax.xml.namespace.QName(
-                                "http://ws.apache.org/axis2", "partidos"),
-                            xmlWriter);
-                    } else {
-                        writeStartElement(null, "http://ws.apache.org/axis2",
-                            "partidos", xmlWriter);
-
-                        // write the nil attribute
-                        writeAttribute("xsi",
-                            "http://www.w3.org/2001/XMLSchema-instance", "nil",
-                            "1", xmlWriter);
-                        xmlWriter.writeEndElement();
-                    }
-                }
-            } else {
-                writeStartElement(null, "http://ws.apache.org/axis2",
-                    "partidos", xmlWriter);
-
-                // write the nil attribute
-                writeAttribute("xsi",
-                    "http://www.w3.org/2001/XMLSchema-instance", "nil", "1",
-                    xmlWriter);
-                xmlWriter.writeEndElement();
+                    "Partido", xmlWriter);
             }
         }
 
@@ -159,8 +73,8 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
     }
 
     private static java.lang.String generatePrefix(java.lang.String namespace) {
-        if (namespace.equals("http://ws.apache.org/axis2")) {
-            return "ns2";
+        if (namespace.equals("http://ws.apache.org/axis2/xsd")) {
+            return "ns1";
         }
 
         return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -373,9 +287,9 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static ListarPartidosResponse parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
-            ListarPartidosResponse object = new ListarPartidosResponse();
+        public static Partido parse(javax.xml.stream.XMLStreamReader reader)
+            throws java.lang.Exception {
+            Partido object = null;
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -407,14 +321,17 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
                         java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
-                        if (!"listarPartidosResponse".equals(type)) {
+                        if (!"Partido".equals(type)) {
                             //find namespace for the prefix
                             java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ListarPartidosResponse) org.apache.ws.axis2.ExtensionMapper.getTypeObject(nsUri,
+                            return (Partido) org.apache.ws.axis2.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
+
+                        throw new org.apache.axis2.databinding.ADBException(
+                            "The an abstract class can not be instantiated !!!");
                     }
                 }
 
@@ -423,78 +340,6 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
                 java.util.Vector handledAttributes = new java.util.Vector();
 
                 reader.next();
-
-                java.util.ArrayList list1 = new java.util.ArrayList();
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "partidos").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "partidos").equals(
-                            reader.getName())) {
-                    // Process the array and step past its final element's end.
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if ("true".equals(nillableValue) ||
-                            "1".equals(nillableValue)) {
-                        list1.add(null);
-                        reader.next();
-                    } else {
-                        list1.add(org.apache.ws.axis2.xsd.Partido.Factory.parse(
-                                reader));
-                    }
-
-                    //loop until we find a start element that is not part of this array
-                    boolean loopDone1 = false;
-
-                    while (!loopDone1) {
-                        // We should be at the end element, but make sure
-                        while (!reader.isEndElement())
-                            reader.next();
-
-                        // Step out of this element
-                        reader.next();
-
-                        // Step to next element event.
-                        while (!reader.isStartElement() &&
-                                !reader.isEndElement())
-                            reader.next();
-
-                        if (reader.isEndElement()) {
-                            //two continuous end elements means we are exiting the xml structure
-                            loopDone1 = true;
-                        } else {
-                            if (new javax.xml.namespace.QName(
-                                        "http://ws.apache.org/axis2", "partidos").equals(
-                                        reader.getName())) {
-                                nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                                        "nil");
-
-                                if ("true".equals(nillableValue) ||
-                                        "1".equals(nillableValue)) {
-                                    list1.add(null);
-                                    reader.next();
-                                } else {
-                                    list1.add(org.apache.ws.axis2.xsd.Partido.Factory.parse(
-                                            reader));
-                                }
-                            } else {
-                                loopDone1 = true;
-                            }
-                        }
-                    }
-
-                    // call the converter utility  to convert and set the array
-                    object.setPartidos((org.apache.ws.axis2.xsd.Partido[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                            org.apache.ws.axis2.xsd.Partido.class, list1));
-                } // End of if for expected property start element
-
-                else {
-                }
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();

@@ -18,24 +18,24 @@ public class ComprobarApuesta implements org.apache.axis2.databinding.ADBBean {
             "comprobarApuesta", "ns2");
 
     /**
-     * field for Id_a
+     * field for Id_apuesta
      */
-    protected int localId_a;
+    protected int localId_apuesta;
 
     /**
      * Auto generated getter method
      * @return int
      */
-    public int getId_a() {
-        return localId_a;
+    public int getId_apuesta() {
+        return localId_apuesta;
     }
 
     /**
      * Auto generated setter method
-     * @param param Id_a
+     * @param param Id_apuesta
      */
-    public void setId_a(int param) {
-        this.localId_a = param;
+    public void setId_apuesta(int param) {
+        this.localId_apuesta = param;
     }
 
     /**
@@ -88,14 +88,14 @@ public class ComprobarApuesta implements org.apache.axis2.databinding.ADBBean {
         }
 
         namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "id_a", xmlWriter);
+        writeStartElement(null, namespace, "id_apuesta", xmlWriter);
 
-        if (localId_a == java.lang.Integer.MIN_VALUE) {
+        if (localId_apuesta == java.lang.Integer.MIN_VALUE) {
             throw new org.apache.axis2.databinding.ADBException(
-                "id_a cannot be null!!");
+                "id_apuesta cannot be null!!");
         } else {
             xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localId_a));
+                    localId_apuesta));
         }
 
         xmlWriter.writeEndElement();
@@ -374,9 +374,9 @@ public class ComprobarApuesta implements org.apache.axis2.databinding.ADBBean {
 
                 if ((reader.isStartElement() &&
                         new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "id_a").equals(
+                            "http://ws.apache.org/axis2", "id_apuesta").equals(
                             reader.getName())) ||
-                        new javax.xml.namespace.QName("", "id_a").equals(
+                        new javax.xml.namespace.QName("", "id_apuesta").equals(
                             reader.getName())) {
                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "nil");
@@ -384,12 +384,13 @@ public class ComprobarApuesta implements org.apache.axis2.databinding.ADBBean {
                     if ("true".equals(nillableValue) ||
                             "1".equals(nillableValue)) {
                         throw new org.apache.axis2.databinding.ADBException(
-                            "The element: " + "id_a" + "  cannot be null");
+                            "The element: " + "id_apuesta" +
+                            "  cannot be null");
                     }
 
                     java.lang.String content = reader.getElementText();
 
-                    object.setId_a(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
+                    object.setId_apuesta(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
                             content));
 
                     reader.next();
