@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="http://ws.apache.org/axis2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://ws.apache.org/axis2" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax21="http://ws.apache.org/namespaces/axis2/map" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+<wsdl:definitions targetNamespace="http://ws.apache.org/axis2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://ws.apache.org/axis2" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax21="http://ws.apache.org/axis2/xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
   <wsdl:types>
-    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2" xmlns:ax22="http://ws.apache.org/namespaces/axis2/map">
-            <xs:import namespace="http://ws.apache.org/namespaces/axis2/map"/>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2" xmlns:ax22="http://ws.apache.org/axis2/xsd">
+            <xs:import namespace="http://ws.apache.org/axis2/xsd"/>
             <xs:element name="listarPartidos">
                 <xs:complexType>
                     <xs:sequence>
@@ -13,7 +13,7 @@
             <xs:element name="listarPartidosResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="Partidos" nillable="true" type="ax22:map1"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="partidos" nillable="true" type="ax22:Partido"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -43,10 +43,24 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="getPartido">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id_partido" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getPartidoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="partido" nillable="true" type="ax22:Partido"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="comprobarApuesta">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="id_a" type="xs:int"/>
+                        <xs:element name="id_apuesta" type="xs:int"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -61,7 +75,7 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="id_apuesta" type="xs:int"/>
-                        <xs:element name="cuota_resultante" type="xs:int"/>
+                        <xs:element name="cuota_resultante" type="xs:double"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -85,7 +99,7 @@
             <xs:element name="apostarPartido">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="id_p" type="xs:int"/>
+                        <xs:element name="id_partido" type="xs:int"/>
                         <xs:element name="goles_e1" type="xs:int"/>
                         <xs:element name="goles_e2" type="xs:int"/>
                         <xs:element name="importe" type="xs:double"/>
@@ -102,17 +116,9 @@
                 </xs:complexType>
             </xs:element>
         </xs:schema>
-    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/namespaces/axis2/map">
-            <xs:complexType name="entry1">
-                <xs:sequence>
-                    <xs:element name="id_partido" type="xs:int"/>
-                    <xs:element minOccurs="0" name="Participantes" nillable="true" type="xs:string"/>
-                </xs:sequence>
-            </xs:complexType>
-            <xs:complexType name="map1">
-                <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Partido" nillable="true" type="ax21:entry1"/>
-                </xs:sequence>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2/xsd">
+            <xs:complexType abstract="true" name="Partido">
+                <xs:sequence/>
             </xs:complexType>
         </xs:schema>
   </wsdl:types>
@@ -122,6 +128,10 @@
   </wsdl:message>
   <wsdl:message name="listarEquiposRequest">
     <wsdl:part name="parameters" element="ns:listarEquipos">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPartidoResponse">
+    <wsdl:part name="parameters" element="ns:getPartidoResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="comprobarApuestaRequest">
@@ -146,6 +156,10 @@
   </wsdl:message>
   <wsdl:message name="apostarPichichiRequest">
     <wsdl:part name="parameters" element="ns:apostarPichichi">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPartidoRequest">
+    <wsdl:part name="parameters" element="ns:getPartido">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="apostarPichichiResponse">
@@ -179,6 +193,12 @@
       <wsdl:input message="ns:apostarPartidoRequest" wsaw:Action="urn:apostarPartido">
     </wsdl:input>
       <wsdl:output message="ns:apostarPartidoResponse" wsaw:Action="urn:apostarPartidoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPartido">
+      <wsdl:input message="ns:getPartidoRequest" wsaw:Action="urn:getPartido">
+    </wsdl:input>
+      <wsdl:output message="ns:getPartidoResponse" wsaw:Action="urn:getPartidoResponse">
     </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="apuestaFinalizada">
@@ -223,6 +243,15 @@
     </wsdl:operation>
     <wsdl:operation name="apostarPartido">
       <http:operation location="apostarPartido"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPartido">
+      <http:operation location="getPartido"/>
       <wsdl:input>
         <mime:content part="parameters" type="application/xml"/>
       </wsdl:input>
@@ -293,6 +322,15 @@
         <soap12:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="getPartido">
+      <soap12:operation soapAction="urn:getPartido" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="apuestaFinalizada">
       <soap12:operation soapAction="urn:apuestaFinalizada" style="document"/>
       <wsdl:input>
@@ -349,6 +387,15 @@
     </wsdl:operation>
     <wsdl:operation name="apostarPartido">
       <soap:operation soapAction="urn:apostarPartido" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPartido">
+      <soap:operation soapAction="urn:getPartido" style="document"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
