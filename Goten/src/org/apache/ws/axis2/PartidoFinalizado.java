@@ -1,5 +1,5 @@
 /**
- * RealizarApuestaPartido.java
+ * PartidoFinalizado.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.0  Built on : Jan 18, 2016 (09:42:13 GMT)
@@ -8,29 +8,19 @@ package org.apache.ws.axis2;
 
 
 /**
- *  RealizarApuestaPartido bean class
+ *  PartidoFinalizado bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBBean {
+public class PartidoFinalizado implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.apache.org/axis2",
-            "realizarApuestaPartido", "ns1");
+            "partidoFinalizado", "ns1");
 
     /**
      * field for Id_partido
      */
     protected int localId_partido;
-
-    /**
-     * field for Goles_e1
-     */
-    protected int localGoles_e1;
-
-    /**
-     * field for Goles_e2
-     */
-    protected int localGoles_e2;
 
     /**
      * Auto generated getter method
@@ -46,38 +36,6 @@ public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBB
      */
     public void setId_partido(int param) {
         this.localId_partido = param;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return int
-     */
-    public int getGoles_e1() {
-        return localGoles_e1;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param Goles_e1
-     */
-    public void setGoles_e1(int param) {
-        this.localGoles_e1 = param;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return int
-     */
-    public int getGoles_e2() {
-        return localGoles_e2;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param Goles_e2
-     */
-    public void setGoles_e2(int param) {
-        this.localGoles_e2 = param;
     }
 
     /**
@@ -121,11 +79,11 @@ public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBB
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":realizarApuestaPartido", xmlWriter);
+                    namespacePrefix + ":partidoFinalizado", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "realizarApuestaPartido", xmlWriter);
+                    "partidoFinalizado", xmlWriter);
             }
         }
 
@@ -138,32 +96,6 @@ public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBB
         } else {
             xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     localId_partido));
-        }
-
-        xmlWriter.writeEndElement();
-
-        namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "goles_e1", xmlWriter);
-
-        if (localGoles_e1 == java.lang.Integer.MIN_VALUE) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "goles_e1 cannot be null!!");
-        } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localGoles_e1));
-        }
-
-        xmlWriter.writeEndElement();
-
-        namespace = "http://ws.apache.org/axis2";
-        writeStartElement(null, namespace, "goles_e2", xmlWriter);
-
-        if (localGoles_e2 == java.lang.Integer.MIN_VALUE) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "goles_e2 cannot be null!!");
-        } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localGoles_e2));
         }
 
         xmlWriter.writeEndElement();
@@ -386,9 +318,9 @@ public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBB
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static RealizarApuestaPartido parse(
+        public static PartidoFinalizado parse(
             javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
-            RealizarApuestaPartido object = new RealizarApuestaPartido();
+            PartidoFinalizado object = new PartidoFinalizado();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -420,12 +352,12 @@ public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBB
                         java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
-                        if (!"realizarApuestaPartido".equals(type)) {
+                        if (!"partidoFinalizado".equals(type)) {
                             //find namespace for the prefix
                             java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (RealizarApuestaPartido) org.apache.ws.axis2.ExtensionMapper.getTypeObject(nsUri,
+                            return (PartidoFinalizado) org.apache.ws.axis2.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -459,70 +391,6 @@ public class RealizarApuestaPartido implements org.apache.axis2.databinding.ADBB
                     java.lang.String content = reader.getElementText();
 
                     object.setId_partido(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
-                            content));
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                    // 1 - A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException(
-                        "Unexpected subelement " + reader.getName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "goles_e1").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "goles_e1").equals(
-                            reader.getName())) {
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if ("true".equals(nillableValue) ||
-                            "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException(
-                            "The element: " + "goles_e1" + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setGoles_e1(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
-                            content));
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                    // 1 - A start element we are not expecting indicates an invalid parameter was passed
-                    throw new org.apache.axis2.databinding.ADBException(
-                        "Unexpected subelement " + reader.getName());
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName(
-                            "http://ws.apache.org/axis2", "goles_e2").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "goles_e2").equals(
-                            reader.getName())) {
-                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "nil");
-
-                    if ("true".equals(nillableValue) ||
-                            "1".equals(nillableValue)) {
-                        throw new org.apache.axis2.databinding.ADBException(
-                            "The element: " + "goles_e2" + "  cannot be null");
-                    }
-
-                    java.lang.String content = reader.getElementText();
-
-                    object.setGoles_e2(org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(
                             content));
 
                     reader.next();

@@ -18,13 +18,12 @@ public class GotenSkeleton {
      */
     public org.apache.ws.axis2.RealizarApuestaPartidoResponse realizarApuestaPartido(
         org.apache.ws.axis2.RealizarApuestaPartido realizarApuestaPartido) {
-        
     	//Creamos el objecto que debemos retornar.
     	int salida = 0;
     	RealizarApuestaPartidoResponse ret = new RealizarApuestaPartidoResponse();
     	
     	//Recuperamos los argumentos de entrada.
-    	int id_p = realizarApuestaPartido.getId_p();
+    	int id_p = realizarApuestaPartido.getId_partido();
     	int goles_e1 = realizarApuestaPartido.getGoles_e1();
     	int goles_e2 = realizarApuestaPartido.getGoles_e2();
 
@@ -38,7 +37,6 @@ public class GotenSkeleton {
     	ret.setId_apuesta(salida);
     	
     	return ret;
-    	
     }
 
     /**
@@ -49,13 +47,13 @@ public class GotenSkeleton {
      */
     public org.apache.ws.axis2.ComprobarApuestaPichichiResponse comprobarApuestaPichichi(
         org.apache.ws.axis2.ComprobarApuestaPichichi comprobarApuestaPichichi) {
-        
+
     	//Creamos el objecto que debemos retornar.
     	double salida = 0;
     	ComprobarApuestaPichichiResponse ret = new ComprobarApuestaPichichiResponse();
     	
     	//Recuperamos los argumentos de entrada.
-    	int id_a = comprobarApuestaPichichi.getId_a();
+    	int id_a = comprobarApuestaPichichi.getId_apuesta();
 
     	//Creamos un objecto de la clase del servicio.
     	Goten g = new Goten();
@@ -67,8 +65,25 @@ public class GotenSkeleton {
     	ret.setResultado_cuota(salida);
     	
     	return ret;
+    }
+
+    /**
+     * Auto generated method signature
+     *
+     * @param partidoFinalizado
+     * @return
+     */
+    public void partidoFinalizado(
+        org.apache.ws.axis2.PartidoFinalizado partidoFinalizado) {
+    	    	
+    	//Recuperamos los argumentos de entrada.
+    	int id_p = partidoFinalizado.getId_partido();
+
+    	//Creamos un objecto de la clase del servicio.
+    	Goten g = new Goten();
     	
-    	
+    	//Llamamos a la función pasandole los parámetros obtenidos.
+    	g.partidoFinalizado(id_p);
     }
 
     /**
@@ -79,7 +94,7 @@ public class GotenSkeleton {
      */
     public org.apache.ws.axis2.RealizarApuestaPichichiResponse realizarApuestaPichichi(
         org.apache.ws.axis2.RealizarApuestaPichichi realizarApuestaPichichi) {
-    	
+
     	
     	//Creamos el objecto que debemos retornar.
     	int salida = 0;
@@ -108,14 +123,14 @@ public class GotenSkeleton {
      */
     public org.apache.ws.axis2.ComprobarApuestaPartidoResponse comprobarApuestaPartido(
         org.apache.ws.axis2.ComprobarApuestaPartido comprobarApuestaPartido) {
-    	
+
     	
     	//Creamos el objecto que debemos retornar.
     	double salida = 0;
     	ComprobarApuestaPartidoResponse ret = new ComprobarApuestaPartidoResponse();
     	
     	//Recuperamos los argumentos de entrada.
-    	int id_a = comprobarApuestaPartido.getId_a();
+    	int id_a = comprobarApuestaPartido.getId_apuesta();
 
     	//Creamos un objecto de la clase del servicio.
     	Goten g = new Goten();
@@ -127,5 +142,21 @@ public class GotenSkeleton {
     	ret.setResultado_cuota(salida);
     	
     	return ret;
+    }
+
+    /**
+     * Auto generated method signature
+     *
+     * @param competicionFinalizada
+     * @return
+     */
+    public void competicionFinalizada(
+        org.apache.ws.axis2.CompeticionFinalizada competicionFinalizada) {
+    	
+    	//Creamos un objecto de la clase del servicio.
+    	Goten g = new Goten();
+    	
+    	//Llamamos a la función.
+    	g.competicionFinalizada();
     }
 }

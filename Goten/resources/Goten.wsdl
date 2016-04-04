@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://ws.apache.org/axis2" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" targetNamespace="http://ws.apache.org/axis2">
-    <wsdl:types>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2">
+<wsdl:definitions targetNamespace="http://ws.apache.org/axis2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://ws.apache.org/axis2" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://ws.apache.org/axis2">
             <xs:element name="realizarApuestaPichichi">
                 <xs:complexType>
                     <xs:sequence>
@@ -19,7 +19,7 @@
             <xs:element name="realizarApuestaPartido">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="id_p" type="xs:int"/>
+                        <xs:element name="id_partido" type="xs:int"/>
                         <xs:element name="goles_e1" type="xs:int"/>
                         <xs:element name="goles_e2" type="xs:int"/>
                     </xs:sequence>
@@ -32,10 +32,17 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="partidoFinalizado">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id_partido" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="comprobarApuestaPichichi">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="id_a" type="xs:int"/>
+                        <xs:element name="id_apuesta" type="xs:int"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -49,7 +56,7 @@
             <xs:element name="comprobarApuestaPartido">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="id_a" type="xs:int"/>
+                        <xs:element name="id_apuesta" type="xs:int"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -60,176 +67,249 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="competicionFinalizada">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
         </xs:schema>
-    </wsdl:types>
-    <wsdl:message name="comprobarApuestaPichichiRequest">
-        <wsdl:part name="parameters" element="ns:comprobarApuestaPichichi"/>
-    </wsdl:message>
-    <wsdl:message name="comprobarApuestaPichichiResponse">
-        <wsdl:part name="parameters" element="ns:comprobarApuestaPichichiResponse"/>
-    </wsdl:message>
-    <wsdl:message name="realizarApuestaPartidoRequest">
-        <wsdl:part name="parameters" element="ns:realizarApuestaPartido"/>
-    </wsdl:message>
-    <wsdl:message name="realizarApuestaPartidoResponse">
-        <wsdl:part name="parameters" element="ns:realizarApuestaPartidoResponse"/>
-    </wsdl:message>
-    <wsdl:message name="realizarApuestaPichichiRequest">
-        <wsdl:part name="parameters" element="ns:realizarApuestaPichichi"/>
-    </wsdl:message>
-    <wsdl:message name="realizarApuestaPichichiResponse">
-        <wsdl:part name="parameters" element="ns:realizarApuestaPichichiResponse"/>
-    </wsdl:message>
-    <wsdl:message name="comprobarApuestaPartidoRequest">
-        <wsdl:part name="parameters" element="ns:comprobarApuestaPartido"/>
-    </wsdl:message>
-    <wsdl:message name="comprobarApuestaPartidoResponse">
-        <wsdl:part name="parameters" element="ns:comprobarApuestaPartidoResponse"/>
-    </wsdl:message>
-    <wsdl:portType name="GotenPortType">
-        <wsdl:operation name="comprobarApuestaPichichi">
-            <wsdl:input message="ns:comprobarApuestaPichichiRequest" wsaw:Action="urn:comprobarApuestaPichichi"/>
-            <wsdl:output message="ns:comprobarApuestaPichichiResponse" wsaw:Action="urn:comprobarApuestaPichichiResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPartido">
-            <wsdl:input message="ns:realizarApuestaPartidoRequest" wsaw:Action="urn:realizarApuestaPartido"/>
-            <wsdl:output message="ns:realizarApuestaPartidoResponse" wsaw:Action="urn:realizarApuestaPartidoResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPichichi">
-            <wsdl:input message="ns:realizarApuestaPichichiRequest" wsaw:Action="urn:realizarApuestaPichichi"/>
-            <wsdl:output message="ns:realizarApuestaPichichiResponse" wsaw:Action="urn:realizarApuestaPichichiResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="comprobarApuestaPartido">
-            <wsdl:input message="ns:comprobarApuestaPartidoRequest" wsaw:Action="urn:comprobarApuestaPartido"/>
-            <wsdl:output message="ns:comprobarApuestaPartidoResponse" wsaw:Action="urn:comprobarApuestaPartidoResponse"/>
-        </wsdl:operation>
-    </wsdl:portType>
-    <wsdl:binding name="GotenSoap11Binding" type="ns:GotenPortType">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="comprobarApuestaPichichi">
-            <soap:operation soapAction="urn:comprobarApuestaPichichi" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPartido">
-            <soap:operation soapAction="urn:realizarApuestaPartido" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPichichi">
-            <soap:operation soapAction="urn:realizarApuestaPichichi" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="comprobarApuestaPartido">
-            <soap:operation soapAction="urn:comprobarApuestaPartido" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:binding name="GotenSoap12Binding" type="ns:GotenPortType">
-        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="comprobarApuestaPichichi">
-            <soap12:operation soapAction="urn:comprobarApuestaPichichi" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPartido">
-            <soap12:operation soapAction="urn:realizarApuestaPartido" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPichichi">
-            <soap12:operation soapAction="urn:realizarApuestaPichichi" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="comprobarApuestaPartido">
-            <soap12:operation soapAction="urn:comprobarApuestaPartido" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:binding name="GotenHttpBinding" type="ns:GotenPortType">
-        <http:binding verb="POST"/>
-        <wsdl:operation name="comprobarApuestaPichichi">
-            <http:operation location="comprobarApuestaPichichi"/>
-            <wsdl:input>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPartido">
-            <http:operation location="realizarApuestaPartido"/>
-            <wsdl:input>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="realizarApuestaPichichi">
-            <http:operation location="realizarApuestaPichichi"/>
-            <wsdl:input>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="comprobarApuestaPartido">
-            <http:operation location="comprobarApuestaPartido"/>
-            <wsdl:input>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="application/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:service name="Goten">
-        <wsdl:port name="GotenHttpSoap11Endpoint" binding="ns:GotenSoap11Binding">
-            <soap:address location="http://localhost:8080/axis2/services/Goten"/>
-        </wsdl:port>
-        <wsdl:port name="GotenHttpSoap12Endpoint" binding="ns:GotenSoap12Binding">
-            <soap12:address location="http://localhost:8080/axis2/services/Goten"/>
-        </wsdl:port>
-        <wsdl:port name="GotenHttpEndpoint" binding="ns:GotenHttpBinding">
-            <http:address location="http://localhost:8080/axis2/services/Goten"/>
-        </wsdl:port>
-    </wsdl:service>
+  </wsdl:types>
+  <wsdl:message name="comprobarApuestaPichichiResponse">
+    <wsdl:part name="parameters" element="ns:comprobarApuestaPichichiResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="competicionFinalizadaRequest">
+    <wsdl:part name="parameters" element="ns:competicionFinalizada">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="realizarApuestaPartidoRequest">
+    <wsdl:part name="parameters" element="ns:realizarApuestaPartido">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="comprobarApuestaPartidoResponse">
+    <wsdl:part name="parameters" element="ns:comprobarApuestaPartidoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="comprobarApuestaPartidoRequest">
+    <wsdl:part name="parameters" element="ns:comprobarApuestaPartido">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="realizarApuestaPichichiRequest">
+    <wsdl:part name="parameters" element="ns:realizarApuestaPichichi">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="realizarApuestaPartidoResponse">
+    <wsdl:part name="parameters" element="ns:realizarApuestaPartidoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="comprobarApuestaPichichiRequest">
+    <wsdl:part name="parameters" element="ns:comprobarApuestaPichichi">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="partidoFinalizadoRequest">
+    <wsdl:part name="parameters" element="ns:partidoFinalizado">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="realizarApuestaPichichiResponse">
+    <wsdl:part name="parameters" element="ns:realizarApuestaPichichiResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GotenPortType">
+    <wsdl:operation name="partidoFinalizado">
+      <wsdl:input message="ns:partidoFinalizadoRequest" wsaw:Action="urn:partidoFinalizado">
+    </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPichichi">
+      <wsdl:input message="ns:comprobarApuestaPichichiRequest" wsaw:Action="urn:comprobarApuestaPichichi">
+    </wsdl:input>
+      <wsdl:output message="ns:comprobarApuestaPichichiResponse" wsaw:Action="urn:comprobarApuestaPichichiResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPartido">
+      <wsdl:input message="ns:realizarApuestaPartidoRequest" wsaw:Action="urn:realizarApuestaPartido">
+    </wsdl:input>
+      <wsdl:output message="ns:realizarApuestaPartidoResponse" wsaw:Action="urn:realizarApuestaPartidoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPichichi">
+      <wsdl:input message="ns:realizarApuestaPichichiRequest" wsaw:Action="urn:realizarApuestaPichichi">
+    </wsdl:input>
+      <wsdl:output message="ns:realizarApuestaPichichiResponse" wsaw:Action="urn:realizarApuestaPichichiResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPartido">
+      <wsdl:input message="ns:comprobarApuestaPartidoRequest" wsaw:Action="urn:comprobarApuestaPartido">
+    </wsdl:input>
+      <wsdl:output message="ns:comprobarApuestaPartidoResponse" wsaw:Action="urn:comprobarApuestaPartidoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="competicionFinalizada">
+      <wsdl:input message="ns:competicionFinalizadaRequest" wsaw:Action="urn:competicionFinalizada">
+    </wsdl:input>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GotenSoap11Binding" type="ns:GotenPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="partidoFinalizado">
+      <soap:operation soapAction="urn:partidoFinalizado" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPichichi">
+      <soap:operation soapAction="urn:comprobarApuestaPichichi" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPartido">
+      <soap:operation soapAction="urn:realizarApuestaPartido" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPichichi">
+      <soap:operation soapAction="urn:realizarApuestaPichichi" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPartido">
+      <soap:operation soapAction="urn:comprobarApuestaPartido" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="competicionFinalizada">
+      <soap:operation soapAction="urn:competicionFinalizada" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GotenSoap12Binding" type="ns:GotenPortType">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="partidoFinalizado">
+      <soap12:operation soapAction="urn:partidoFinalizado" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPichichi">
+      <soap12:operation soapAction="urn:comprobarApuestaPichichi" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPartido">
+      <soap12:operation soapAction="urn:realizarApuestaPartido" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPichichi">
+      <soap12:operation soapAction="urn:realizarApuestaPichichi" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPartido">
+      <soap12:operation soapAction="urn:comprobarApuestaPartido" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="competicionFinalizada">
+      <soap12:operation soapAction="urn:competicionFinalizada" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GotenHttpBinding" type="ns:GotenPortType">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="partidoFinalizado">
+      <http:operation location="partidoFinalizado"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPichichi">
+      <http:operation location="comprobarApuestaPichichi"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPartido">
+      <http:operation location="realizarApuestaPartido"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="realizarApuestaPichichi">
+      <http:operation location="realizarApuestaPichichi"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="comprobarApuestaPartido">
+      <http:operation location="comprobarApuestaPartido"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="competicionFinalizada">
+      <http:operation location="competicionFinalizada"/>
+      <wsdl:input>
+        <mime:content part="parameters" type="application/xml"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Goten">
+    <wsdl:port name="GotenHttpEndpoint" binding="ns:GotenHttpBinding">
+      <http:address location="http://localhost:8080/axis2/services/Goten"/>
+    </wsdl:port>
+    <wsdl:port name="GotenHttpSoap12Endpoint" binding="ns:GotenSoap12Binding">
+      <soap12:address location="http://localhost:8080/axis2/services/Goten"/>
+    </wsdl:port>
+    <wsdl:port name="GotenHttpSoap11Endpoint" binding="ns:GotenSoap11Binding">
+      <soap:address location="http://localhost:8080/axis2/services/Goten"/>
+    </wsdl:port>
+  </wsdl:service>
 </wsdl:definitions>

@@ -1,5 +1,5 @@
 /**
- * GotenMessageReceiverInOut.java
+ * GotenMessageReceiverInOnly.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.0  Built on : Jan 18, 2016 (09:41:27 GMT)
@@ -8,12 +8,11 @@ package org.apache.ws.axis2;
 
 
 /**
- *  GotenMessageReceiverInOut message receiver
+ *  GotenMessageReceiverInOnly message receiver
  */
-public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.AbstractInOutMessageReceiver {
+public class GotenMessageReceiverInOnly extends org.apache.axis2.receivers.AbstractMessageReceiver {
     public void invokeBusinessLogic(
-        org.apache.axis2.context.MessageContext msgContext,
-        org.apache.axis2.context.MessageContext newMsgContext)
+        org.apache.axis2.context.MessageContext msgContext)
         throws org.apache.axis2.AxisFault {
         try {
             // get the implementation class for the Web Service
@@ -38,74 +37,29 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
             if ((op.getName() != null) &&
                     ((methodName = org.apache.axis2.util.JavaUtils.xmlNameToJavaIdentifier(
                             op.getName().getLocalPart())) != null)) {
-                if ("realizarApuestaPartido".equals(methodName)) {
-                    org.apache.ws.axis2.RealizarApuestaPartidoResponse realizarApuestaPartidoResponse23 =
-                        null;
-                    org.apache.ws.axis2.RealizarApuestaPartido wrappedParam = (org.apache.ws.axis2.RealizarApuestaPartido) fromOM(msgContext.getEnvelope()
-                                                                                                                                            .getBody()
-                                                                                                                                            .getFirstElement(),
-                            org.apache.ws.axis2.RealizarApuestaPartido.class);
+                if ("partidoFinalizado".equals(methodName)) {
+                    //doc style
+                    org.apache.ws.axis2.PartidoFinalizado wrappedParam = (org.apache.ws.axis2.PartidoFinalizado) fromOM(msgContext.getEnvelope()
+                                                                                                                                  .getBody()
+                                                                                                                                  .getFirstElement(),
+                            org.apache.ws.axis2.PartidoFinalizado.class);
 
-                    realizarApuestaPartidoResponse23 = skel.realizarApuestaPartido(wrappedParam);
+                    skel.partidoFinalizado(wrappedParam);
 
-                    envelope = toEnvelope(getSOAPFactory(msgContext),
-                            realizarApuestaPartidoResponse23, false,
-                            new javax.xml.namespace.QName(
-                                "http://ws.apache.org/axis2",
-                                "realizarApuestaPartidoResponse"));
-                } else
-                 if ("comprobarApuestaPichichi".equals(methodName)) {
-                    org.apache.ws.axis2.ComprobarApuestaPichichiResponse comprobarApuestaPichichiResponse25 =
-                        null;
-                    org.apache.ws.axis2.ComprobarApuestaPichichi wrappedParam = (org.apache.ws.axis2.ComprobarApuestaPichichi) fromOM(msgContext.getEnvelope()
-                                                                                                                                                .getBody()
-                                                                                                                                                .getFirstElement(),
-                            org.apache.ws.axis2.ComprobarApuestaPichichi.class);
+                    envelope = getSOAPFactory(msgContext).getDefaultEnvelope();
+                } else if ("competicionFinalizada".equals(methodName)) {
+                    //doc style
+                    org.apache.ws.axis2.CompeticionFinalizada wrappedParam = (org.apache.ws.axis2.CompeticionFinalizada) fromOM(msgContext.getEnvelope()
+                                                                                                                                          .getBody()
+                                                                                                                                          .getFirstElement(),
+                            org.apache.ws.axis2.CompeticionFinalizada.class);
 
-                    comprobarApuestaPichichiResponse25 = skel.comprobarApuestaPichichi(wrappedParam);
+                    skel.competicionFinalizada(wrappedParam);
 
-                    envelope = toEnvelope(getSOAPFactory(msgContext),
-                            comprobarApuestaPichichiResponse25, false,
-                            new javax.xml.namespace.QName(
-                                "http://ws.apache.org/axis2",
-                                "comprobarApuestaPichichiResponse"));
-                } else
-                 if ("realizarApuestaPichichi".equals(methodName)) {
-                    org.apache.ws.axis2.RealizarApuestaPichichiResponse realizarApuestaPichichiResponse27 =
-                        null;
-                    org.apache.ws.axis2.RealizarApuestaPichichi wrappedParam = (org.apache.ws.axis2.RealizarApuestaPichichi) fromOM(msgContext.getEnvelope()
-                                                                                                                                              .getBody()
-                                                                                                                                              .getFirstElement(),
-                            org.apache.ws.axis2.RealizarApuestaPichichi.class);
-
-                    realizarApuestaPichichiResponse27 = skel.realizarApuestaPichichi(wrappedParam);
-
-                    envelope = toEnvelope(getSOAPFactory(msgContext),
-                            realizarApuestaPichichiResponse27, false,
-                            new javax.xml.namespace.QName(
-                                "http://ws.apache.org/axis2",
-                                "realizarApuestaPichichiResponse"));
-                } else
-                 if ("comprobarApuestaPartido".equals(methodName)) {
-                    org.apache.ws.axis2.ComprobarApuestaPartidoResponse comprobarApuestaPartidoResponse29 =
-                        null;
-                    org.apache.ws.axis2.ComprobarApuestaPartido wrappedParam = (org.apache.ws.axis2.ComprobarApuestaPartido) fromOM(msgContext.getEnvelope()
-                                                                                                                                              .getBody()
-                                                                                                                                              .getFirstElement(),
-                            org.apache.ws.axis2.ComprobarApuestaPartido.class);
-
-                    comprobarApuestaPartidoResponse29 = skel.comprobarApuestaPartido(wrappedParam);
-
-                    envelope = toEnvelope(getSOAPFactory(msgContext),
-                            comprobarApuestaPartidoResponse29, false,
-                            new javax.xml.namespace.QName(
-                                "http://ws.apache.org/axis2",
-                                "comprobarApuestaPartidoResponse"));
+                    envelope = getSOAPFactory(msgContext).getDefaultEnvelope();
                 } else {
                     throw new java.lang.RuntimeException("method not found");
                 }
-
-                newMsgContext.setEnvelope(envelope);
             }
         } catch (java.lang.Exception e) {
             throw org.apache.axis2.AxisFault.makeFault(e);

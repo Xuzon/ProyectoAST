@@ -4,6 +4,7 @@
 <serviceGroup>
     <service name="Goten">
         <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only" class="org.apache.ws.axis2.GotenMessageReceiverInOnly"/>
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.apache.ws.axis2.GotenMessageReceiverInOut"/>
         </messageReceivers>
         <parameter name="ServiceClass">org.apache.ws.axis2.GotenSkeleton</parameter>
@@ -17,6 +18,9 @@
             <actionMapping>urn:comprobarApuestaPichichi</actionMapping>
             <outputActionMapping>urn:comprobarApuestaPichichiResponse</outputActionMapping>
         </operation>
+        <operation name="partidoFinalizado" mep="http://www.w3.org/ns/wsdl/in-only" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:partidoFinalizado</actionMapping>
+        </operation>
         <operation name="realizarApuestaPichichi" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
             <actionMapping>urn:realizarApuestaPichichi</actionMapping>
             <outputActionMapping>urn:realizarApuestaPichichiResponse</outputActionMapping>
@@ -24,6 +28,9 @@
         <operation name="comprobarApuestaPartido" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://ws.apache.org/axis2">
             <actionMapping>urn:comprobarApuestaPartido</actionMapping>
             <outputActionMapping>urn:comprobarApuestaPartidoResponse</outputActionMapping>
+        </operation>
+        <operation name="competicionFinalizada" mep="http://www.w3.org/ns/wsdl/in-only" namespace="http://ws.apache.org/axis2">
+            <actionMapping>urn:competicionFinalizada</actionMapping>
         </operation>
     </service>
 </serviceGroup>
