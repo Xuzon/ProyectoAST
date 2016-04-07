@@ -1,6 +1,7 @@
 package org.apache.ws.axis2;
 
 
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -15,28 +16,27 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.util.XMLUtils;
 import org.apache.log4j.varia.NullAppender;
-import org.w3c.dom.NodeList;
-
 
 
 public class Servicio {
 	private String endpoint;
-	private static String uddi;
+	private static String dir_uddi;
 	
 	public Servicio(String nombre) {
-		String url="";
+		String service_key="";
 		
 		//Asignamos un valor por defecto de la localización del servidor uddi.
-		uddi = "http://localhost:8080/juddiv3/services/inquiry";
+		//dir_uddi = "http://localhost:8082/juddiv3/services/inquiry";
 		
 		//Buscamos en la web la dirección del servidor uddi real.
+		String ip_uddi = "";
 		try
 		 {
 			URL web = new URL("http://brudi.es/ast/uddi.txt");
 			BufferedReader in = new BufferedReader(new InputStreamReader(web.openStream()));
-			if((uddi = in.readLine()) != null);
+			if((ip_uddi = in.readLine()) != null);
+			dir_uddi = ip_uddi+"/juddiv3/services/inquiry";
 		 }
 		catch(Exception e)
 		 {
@@ -47,7 +47,7 @@ public class Servicio {
 		 {
 			//POSTUREO, NO TOCAR.
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
-			
+		
 			//Instanciamos el servicio de cliente y las opciones
 			ServiceClient sc = new ServiceClient();
 			Options opts = new Options();
@@ -55,36 +55,31 @@ public class Servicio {
 			opts.setAction("find_service");
 			
 			//Asignamos en las opciones la referencia al servicio propio.
-			opts.setTo(new EndpointReference(uddi));
+			opts.setTo(new EndpointReference(dir_uddi));
 			
 			sc.setOptions(opts);
 			OMElement res = sc.sendReceive(find_service(nombre));
-						
+							
 			Iterator <OMElement> x = res.getChildrenWithLocalName("serviceInfos");
 			if(x.hasNext())
 			 {
-				url=x.next().getFirstElement().getAttributeValue(new QName("serviceKey"));			
+				service_key=x.next().getFirstElement().getAttributeValue(new QName("serviceKey"));			
 			 }
-
+			
 			sc.cleanupTransport();
+			
 			
 			opts.setAction("get_serviceDetail");
 			
-			OMElement res1 = sc.sendReceive(get_serviceDetail(url));
-			NodeList nl=XMLUtils.toDOM(res1).getElementsByTagName("ns2:bindingTemplate");
-			for(int i=0;i<nl.getLength();i++)
-			{
-				if(nl.item(i).getChildNodes().item(2).getChildNodes().item(0).getChildNodes().item(1).getTextContent().contains("Soap"))
-				{
-					endpoint=nl.item(i).getChildNodes().item(1).getTextContent();
-				}
-			}
+			OMElement res1 = sc.sendReceive(get_serviceDetail(service_key));
+
+			endpoint = ((OMElement)((OMElement)res1.getFirstElement().getChildrenWithLocalName("bindingTemplates").next()).getFirstElement().getChildrenWithLocalName("accessPoint").next()).getText();
 			
 			sc.cleanupTransport();
-		}
+		 }
 		catch(Exception e)
 		 {
-			e.printStackTrace();
+		 	e.printStackTrace();
 		 }
 
 	}
