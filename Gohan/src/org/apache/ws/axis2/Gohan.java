@@ -6,21 +6,28 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.NetworkInterface;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.engine.ServiceLifeCycle;
 import org.apache.log4j.varia.NullAppender;
 
 
-public class Gohan {
+public class Gohan implements ServiceLifeCycle {
 
 	static final String fichero_saldos="/home/bruno/AST/db/saldos.txt";
 	
@@ -43,6 +50,154 @@ public class Gohan {
 	boolean largo=false;
 	boolean fecha=false;
 	boolean mod=false;
+	
+	
+	//Variables para realizar el registro en UDDI
+	private static String dir_uddi_publish;
+	private static String dir_uddi_security;
+	private static final String uddi_user = "games";
+	private static final String uddi_pass = "games";
+	private static final String service_name = "Gohan";
+	private static final String service_key = "uddi:localhost:servicios-propios-"+service_name.toLowerCase();
+	private static final String business_key = "uddi:localhost:key";
+	
+	
+	
+	
+	/**
+	 * Método que se ejecuta al iniciar el servicio en axis2.
+	 */
+	@Override
+	public void startUp(ConfigurationContext arg0, AxisService arg1) {
+		log("Se ha iniciado el servicio.");
+		
+		//Buscamos en la web la dirección del servidor uddi real.
+		String ip_uddi = "";
+		try
+		 {
+			URL web = new URL("http://brudi.es/ast/uddi.txt");
+			BufferedReader in = new BufferedReader(new InputStreamReader(web.openStream()));
+			if((ip_uddi = in.readLine()) != null);
+			dir_uddi_publish = ip_uddi+"/juddiv3/services/publish";
+			dir_uddi_security = ip_uddi+"/juddiv3/services/security";
+		}
+		catch(Exception e)
+		 {
+			log(e.toString());
+		 }
+		
+		String ip = "";
+		try
+		 {
+			NetworkInterface interfaz = NetworkInterface.getByName("wlan0");
+			ip = interfaz.getInterfaceAddresses().get(3).getAddress().getHostAddress();
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+		 }
+		
+		String access_point = "http://"+ip+":8080/axis2/services/"+service_name;
+		
+		try
+		 {
+			//POSTUREO, NO TOCAR.
+			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
+			
+			//Instanciamos el servicio de cliente y las opciones
+			ServiceClient sc = new ServiceClient();
+			Options opts = new Options();
+			
+			//Asignamos en las opciones la referencia al servicio propio.
+			opts.setTo(new EndpointReference(dir_uddi_security));
+			
+			opts.setAction("get_authToken");
+				
+			sc.setOptions(opts);
+			OMElement res = sc.sendReceive(get_authToken(uddi_user, uddi_pass));
+			
+			sc.cleanupTransport();
+			
+			
+			//Asignamos en las opciones la referencia al servicio propio.
+			opts.setTo(new EndpointReference(dir_uddi_publish));
+			
+			opts.setAction("save_service");
+
+			sc.setOptions(opts);
+			sc.sendRobust(save_service(res.getFirstElement().getText(), service_name, service_key, business_key, access_point));
+			
+			sc.cleanupTransport();
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+		 }
+	}
+	
+	
+	/**
+	 * Método que se ejecuta al cerrar el servicio en axis2.
+	 */
+	@Override
+	public void shutDown(ConfigurationContext arg0, AxisService arg1) {
+
+		//Buscamos en la web la dirección del servidor uddi real.
+		String ip_uddi = "";
+		try
+		 {
+			URL web = new URL("http://brudi.es/ast/uddi.txt");
+			BufferedReader in = new BufferedReader(new InputStreamReader(web.openStream()));
+			if((ip_uddi = in.readLine()) != null);
+			dir_uddi_publish = ip_uddi+"/juddiv3/services/publish";
+			dir_uddi_security = ip_uddi+"/juddiv3/services/security";
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+		 }
+		
+		try
+		 {
+			//POSTUREO, NO TOCAR.
+			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
+			
+			//Instanciamos el servicio de cliente y las opciones
+			ServiceClient sc = new ServiceClient();
+			Options opts = new Options();
+			
+			
+			
+			//Asignamos en las opciones la referencia al servicio propio.
+			opts.setTo(new EndpointReference(dir_uddi_security));
+			
+			opts.setAction("get_authToken");
+				
+			sc.setOptions(opts);
+			OMElement res = sc.sendReceive(get_authToken(uddi_user, uddi_pass));
+			
+			sc.cleanupTransport();
+						
+			//Asignamos en las opciones la referencia al servicio propio.
+			opts.setTo(new EndpointReference(dir_uddi_publish));
+			
+			opts.setAction("delete_service");
+			//uddi:localhost:key
+			sc.setOptions(opts);
+			sc.sendRobust(delete_service(res.getFirstElement().getText(), service_key));
+			
+			sc.cleanupTransport();
+		 }
+		catch(Exception e)
+		 {
+			log(e.toString());
+		 }
+		
+		
+		
+		log("Se ha finalizado el servicio.");
+	}
+	
 	
 	/**
 	 * Permite alterar el saldo de una tarjeta determinada, pasandole un importe tanto negativo como positivo.
@@ -433,6 +588,72 @@ public class Gohan {
 		return method;
 	}
 	
+	
+	
+	
+	//*************************************************************************************************************************//
+	//					Métodos para contruir el mensaje de llamada a los servicios de publicación de UDDI 					   //
+	//*************************************************************************************************************************//
+	
+	private static OMElement save_service(String authtoken, String nombre, String ser_key, String bus_key, String access_point)
+	 {
+		OMFactory fac = OMAbstractFactory.getOMFactory();
+		OMNamespace omNs = fac.createOMNamespace("urn:uddi-org:api_v3", "");
+		OMNamespace omNs1 = fac.createOMNamespace("", "");
+		OMElement method = fac.createOMElement("save_service", omNs);
+		OMElement auth = fac.createOMElement("authInfo", omNs);
+		OMElement business = fac.createOMElement("businessService", omNs);
+		OMElement bts = fac.createOMElement("bindingTemplates", omNs);
+		OMElement bt = fac.createOMElement("bindingTemplate", omNs);
+		OMElement ap = fac.createOMElement("accessPoint", omNs);
+		OMElement name = fac.createOMElement("name", omNs);
+		
+		auth.setText(authtoken);
+	    method.addChild(auth);
 
+		ap.setText(access_point);
+		bt.addChild(ap);
+		bts.addChild(bt);
+		name.setText(nombre);
+		business.addChild(name);
+		business.addChild(bts);
+		business.addAttribute("serviceKey", ser_key, omNs1);
+		business.addAttribute("businessKey", bus_key, omNs1);
+	    method.addChild(business);
+	    
+		return method;
+	 }
+	
+	
+	private static OMElement delete_service(String authtoken, String ser_key)
+	 {
+		OMFactory fac = OMAbstractFactory.getOMFactory();
+		OMNamespace omNs = fac.createOMNamespace("urn:uddi-org:api_v3", "");
+		OMElement method = fac.createOMElement("delete_service", omNs);
+		OMElement auth = fac.createOMElement("authInfo", omNs);
+		OMElement sk = fac.createOMElement("serviceKey", omNs);
+		
+		auth.setText(authtoken);
+		sk.setText(ser_key);
+		
+		method.addChild(auth);
+		method.addChild(sk);
+		
+		return method;
+	 }
+	
+	
+	private static OMElement get_authToken(String user, String pass)
+	 {
+		OMFactory fac = OMAbstractFactory.getOMFactory();
+		OMNamespace omNs = fac.createOMNamespace("urn:uddi-org:api_v3", "");
+		OMNamespace omNs1 = fac.createOMNamespace("", "");
+		OMElement method = fac.createOMElement("get_authToken", omNs);
+		OMAttribute att1 = fac.createOMAttribute("userID", omNs1, user);
+		OMAttribute att2 = fac.createOMAttribute("cred", omNs1, pass);
+		method.addAttribute(att1);
+		method.addAttribute(att2);
+		return method;
+	 }
 
 }
