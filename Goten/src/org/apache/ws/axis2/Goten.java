@@ -2,6 +2,7 @@ package org.apache.ws.axis2;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,12 +30,15 @@ import org.apache.log4j.varia.NullAppender;
 public class Goten implements ServiceLifeCycle {
 	
 	//Nombre del fichero que almacena las apuestas.
-	private static final String fichero_apuestas="/home/bruno/AST/db/apuestas.txt";
+	private static final String fichero_apuestas="apuestas.txt";
+	private static final String directorio_apuestas= System.getProperty("user.home")+"/AST/db";
 	
 	//Nombre y localización del fichero de logs para este programa.
-	private static final String fichero_log = "/home/bruno/AST/db/goten_log.txt";
+	private static final String fichero_log = "goten_log.txt";
+	private static final String directorio_log = System.getProperty("user.home")+"/AST/log";
 	
 	//Nombres de los servicios en UDDI
+	@SuppressWarnings("unused")
 	private static final String name_service_goku = "Goku";
 	private static final String name_service_mundial = "Mundial";
 	
@@ -199,51 +203,61 @@ public class Goten implements ServiceLifeCycle {
 		int mayor=0;
 		
 		BufferedReader in = null;
-		try
-		 {
-			in = new BufferedReader(new FileReader(fichero_apuestas));
-			String l_apuesta="";
-			while((l_apuesta=in.readLine())!=null)
-			 {
-				if(l_apuesta.equals("")) continue;
-				if(id_a.equals("0"))
-				 {
-					id.add(Integer.parseInt(l_apuesta.split("-.-")[0]));
-				 }
-				else if(l_apuesta.split("-.-")[0].equals(id_a))
-				 {
-					apuesta = l_apuesta.split("-.-")[1];
-					break;
-				 }
-			 }
-		 }
-		catch(IOException ioe)
-		 {
-			log(ioe.toString());
-		 }
-		finally
+		
+		File f = new File(directorio_apuestas+"/"+fichero_apuestas);
+		if(f.exists())
 		 {
 			try
+			 {
+				in = new BufferedReader(new FileReader(f));
+				String l_apuesta="";
+				while((l_apuesta=in.readLine())!=null)
 				 {
-				if( null != in )
-				 {
-					in.close();
+					if(l_apuesta.equals("")) continue;
+					if(id_a.equals("0"))
+					 {
+						id.add(Integer.parseInt(l_apuesta.split("-.-")[0]));
+					 }
+					else if(l_apuesta.split("-.-")[0].equals(id_a))
+					 {
+						apuesta = l_apuesta.split("-.-")[1];
+						break;
+					 }
 				 }
 			 }
-			catch (Exception e2)
+			catch(IOException ioe)
 			 {
-				log(e2.toString());
-				return null;
+				log(ioe.toString());
+			 }
+			finally
+			 {
+				try
+					 {
+					if( null != in )
+					 {
+						in.close();
+					 }
+				 }
+				catch (Exception e2)
+				 {
+					log(e2.toString());
+					return null;
+				 }
+			 }
+		
+			if(id_a.equals("0"))
+			 {
+				for(int i=0; i<id.size(); i++)
+				 {
+					if(id.get(i)>mayor) mayor=id.get(i);
+				 }
+				return (mayor+1)+"";
 			 }
 		 }
-		
-		if(id_a.equals("0"))
+		else
 		 {
-			for(int i=0; i<id.size(); i++)
-			 {
-				if(id.get(i)>mayor) mayor=id.get(i);
-			 }
-			return (mayor+1)+"";
+			if(id_a.equals("0"))
+				apuesta = "1";
 		 }
 		return apuesta;
 	 }
@@ -259,9 +273,13 @@ public class Goten implements ServiceLifeCycle {
 	private static void guardarApuesta(int id_a, String datos)
 	 {
 		BufferedWriter out = null;
+		
+		File dir = new File(directorio_apuestas);
+		dir.mkdirs();
+		
 		try
 		 {
-			out = new BufferedWriter(new FileWriter(fichero_apuestas, true));   
+			out = new BufferedWriter(new FileWriter(dir+"/"+fichero_apuestas, true));   
 			out.write(id_a+"-.-"+datos+"\n");
 		 }
 		catch(Exception e1)
@@ -294,10 +312,14 @@ public class Goten implements ServiceLifeCycle {
 	private static void log(String datos)
 	 {
 		BufferedWriter out = null;
+		
+		File dir = new File(directorio_log);
+		dir.mkdirs();
+		
 		try
 		 {
 			Date fecha = new Date();
-			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out = new BufferedWriter(new FileWriter(dir+"/"+fichero_log, true));   
 			out.write(fecha+":"+" Goten -- "+datos+"\n");
 		 }
 		catch(Exception e1)
@@ -342,6 +364,11 @@ public class Goten implements ServiceLifeCycle {
 		
 		//Creamos el objeto servicio que nos permitirá obtener el endPoint.
 		Servicio mundial = new Servicio(name_service_mundial);
+		if(mundial.getError()==-100 || mundial.getError()==-101)
+		 {
+			return mundial.getError()-30;
+		 }
+		
 		try
 		 {
 			cuota = Double.parseDouble(datos[3]);
@@ -416,6 +443,10 @@ public class Goten implements ServiceLifeCycle {
 		
 		//Creamos el objeto servicio que nos permitirá obtener el endPoint.
 		Servicio mundial = new Servicio(name_service_mundial);
+		if(mundial.getError()==-100 || mundial.getError()==-101)
+		 {
+			return mundial.getError()-30;
+		 }
 		
 		try
 		 {
@@ -440,6 +471,7 @@ public class Goten implements ServiceLifeCycle {
 			res = sc.sendReceive(topGoalScores());
 			
 			//Obtenemos el nombre de los 3 máximos goleadores de la competición.
+			@SuppressWarnings("unchecked")
 			Iterator<OMElement> it = res.getFirstElement().getChildElements();
 			while(it.hasNext())
 			 {

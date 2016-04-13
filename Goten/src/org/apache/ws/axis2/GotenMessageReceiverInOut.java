@@ -113,6 +113,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
     }
 
     //
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.RealizarApuestaPartido param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -124,6 +125,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.RealizarApuestaPartidoResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -135,6 +137,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ComprobarApuestaPichichi param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -146,6 +149,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ComprobarApuestaPichichiResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -157,6 +161,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.PartidoFinalizado param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -168,6 +173,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.RealizarApuestaPichichi param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -179,6 +185,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.RealizarApuestaPichichiResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -190,6 +197,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ComprobarApuestaPartido param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -201,6 +209,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ComprobarApuestaPartidoResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -212,6 +221,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.CompeticionFinalizada param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -242,6 +252,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.RealizarApuestaPartidoResponse wraprealizarApuestaPartido() {
         org.apache.ws.axis2.RealizarApuestaPartidoResponse wrappedElement = new org.apache.ws.axis2.RealizarApuestaPartidoResponse();
 
@@ -267,6 +278,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ComprobarApuestaPichichiResponse wrapcomprobarApuestaPichichi() {
         org.apache.ws.axis2.ComprobarApuestaPichichiResponse wrappedElement = new org.apache.ws.axis2.ComprobarApuestaPichichiResponse();
 
@@ -292,6 +304,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.RealizarApuestaPichichiResponse wraprealizarApuestaPichichi() {
         org.apache.ws.axis2.RealizarApuestaPichichiResponse wrappedElement = new org.apache.ws.axis2.RealizarApuestaPichichiResponse();
 
@@ -317,6 +330,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ComprobarApuestaPartidoResponse wrapcomprobarApuestaPartido() {
         org.apache.ws.axis2.ComprobarApuestaPartidoResponse wrappedElement = new org.apache.ws.axis2.ComprobarApuestaPartidoResponse();
 
@@ -326,13 +340,14 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
     /**
      *  get the default envelope
      */
+    @SuppressWarnings("unused")
     private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
         org.apache.axiom.soap.SOAPFactory factory) {
         return factory.getDefaultEnvelope();
     }
 
     private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
-        java.lang.Class type) throws org.apache.axis2.AxisFault {
+        @SuppressWarnings("rawtypes") java.lang.Class type) throws org.apache.axis2.AxisFault {
         try {
             if (org.apache.ws.axis2.CompeticionFinalizada.class.equals(type)) {
                 return org.apache.ws.axis2.CompeticionFinalizada.Factory.parse(param.getXMLStreamReaderWithoutCaching());
@@ -384,6 +399,7 @@ public class GotenMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         return null;
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axis2.AxisFault createAxisFault(java.lang.Exception e) {
         org.apache.axis2.AxisFault f;
         Throwable cause = e.getCause();
