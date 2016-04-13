@@ -1,12 +1,8 @@
 package org.apache.ws.axis2;
-
-
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Iterator;
-
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -21,7 +17,9 @@ import org.apache.log4j.varia.NullAppender;
 
 public class Servicio {
 	private String endpoint;
+	private int error=0;
 	private static String dir_uddi;
+	
 	
 	public Servicio(String nombre) {
 		String service_key="";
@@ -58,28 +56,37 @@ public class Servicio {
 			opts.setTo(new EndpointReference(dir_uddi));
 			
 			sc.setOptions(opts);
-			OMElement res = sc.sendReceive(find_service(nombre));
-							
-			Iterator <OMElement> x = res.getChildrenWithLocalName("serviceInfos");
-			if(x.hasNext())
+			OMElement res = sc.sendReceive(find_service(nombre));			
+			
+			if(!res.getFirstElement().getFirstElement().getText().equals("0"))
 			 {
-				service_key=x.next().getFirstElement().getAttributeValue(new QName("serviceKey"));			
+				@SuppressWarnings("unchecked")
+				Iterator <OMElement> x = res.getChildrenWithLocalName("serviceInfos");
+				if(x.hasNext())
+				 {
+					service_key=x.next().getFirstElement().getAttributeValue(new QName("serviceKey"));			
+				 }
+			
+				sc.cleanupTransport();
+				
+				opts.setAction("get_serviceDetail");
+				
+				OMElement res1 = sc.sendReceive(get_serviceDetail(service_key));
+	
+				endpoint = ((OMElement)((OMElement)res1.getFirstElement().getChildrenWithLocalName("bindingTemplates").next()).getFirstElement().getChildrenWithLocalName("accessPoint").next()).getText();
+				
+				sc.cleanupTransport();
 			 }
-			
-			sc.cleanupTransport();
-			
-			
-			opts.setAction("get_serviceDetail");
-			
-			OMElement res1 = sc.sendReceive(get_serviceDetail(service_key));
-
-			endpoint = ((OMElement)((OMElement)res1.getFirstElement().getChildrenWithLocalName("bindingTemplates").next()).getFirstElement().getChildrenWithLocalName("accessPoint").next()).getText();
-			
-			sc.cleanupTransport();
+			else
+			 {
+				endpoint=null;
+				error = -101;
+			 }
 		 }
 		catch(Exception e)
 		 {
 		 	e.printStackTrace();
+		 	error=-100;
 		 }
 
 	}
@@ -89,6 +96,11 @@ public class Servicio {
 	{
 		return endpoint;
 	}
+	
+	public int getError()
+	 {
+		return error;
+	 }
 
 	
 	

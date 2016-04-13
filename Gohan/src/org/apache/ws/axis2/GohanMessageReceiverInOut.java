@@ -81,7 +81,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
     }
 
     //
-    private org.apache.axiom.om.OMElement toOM(
+    @SuppressWarnings("unused")
+	private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.RealizarPago param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
         try {
@@ -92,7 +93,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
-    private org.apache.axiom.om.OMElement toOM(
+    @SuppressWarnings("unused")
+	private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.RealizarPagoResponse param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
         try {
@@ -103,7 +105,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
-    private org.apache.axiom.om.OMElement toOM(
+    @SuppressWarnings("unused")
+	private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.AbonarImporte param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
         try {
@@ -114,7 +117,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
-    private org.apache.axiom.om.OMElement toOM(
+    @SuppressWarnings("unused")
+	private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.AbonarImporteResponse param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
         try {
@@ -143,7 +147,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
-    private org.apache.ws.axis2.RealizarPagoResponse wraprealizarPago() {
+    @SuppressWarnings("unused")
+	private org.apache.ws.axis2.RealizarPagoResponse wraprealizarPago() {
         org.apache.ws.axis2.RealizarPagoResponse wrappedElement = new org.apache.ws.axis2.RealizarPagoResponse();
 
         return wrappedElement;
@@ -167,7 +172,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         }
     }
 
-    private org.apache.ws.axis2.AbonarImporteResponse wrapabonarImporte() {
+    @SuppressWarnings("unused")
+	private org.apache.ws.axis2.AbonarImporteResponse wrapabonarImporte() {
         org.apache.ws.axis2.AbonarImporteResponse wrappedElement = new org.apache.ws.axis2.AbonarImporteResponse();
 
         return wrappedElement;
@@ -176,12 +182,14 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
     /**
      *  get the default envelope
      */
-    private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
+    @SuppressWarnings("unused")
+	private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
         org.apache.axiom.soap.SOAPFactory factory) {
         return factory.getDefaultEnvelope();
     }
 
-    private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
+    @SuppressWarnings("rawtypes")
+	private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
         java.lang.Class type) throws org.apache.axis2.AxisFault {
         try {
             if (org.apache.ws.axis2.AbonarImporte.class.equals(type)) {
@@ -206,7 +214,8 @@ public class GohanMessageReceiverInOut extends org.apache.axis2.receivers.Abstra
         return null;
     }
 
-    private org.apache.axis2.AxisFault createAxisFault(java.lang.Exception e) {
+    @SuppressWarnings("unused")
+	private org.apache.axis2.AxisFault createAxisFault(java.lang.Exception e) {
         org.apache.axis2.AxisFault f;
         Throwable cause = e.getCause();
 

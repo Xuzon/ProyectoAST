@@ -3,6 +3,7 @@ package org.apache.ws.axis2;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,13 +30,17 @@ import org.apache.log4j.varia.NullAppender;
 
 public class Gohan implements ServiceLifeCycle {
 
-	static final String fichero_saldos="/home/bruno/AST/db/saldos.txt";
+	//Nombre y localización del fichero de almacenamiento de saldos.
+	private static final String fichero_saldos="saldos.txt";
+	private static final String directorio_saldos= System.getProperty("user.home")+"/AST/db";
+
+	
+	//Nombre y localización del fichero de logs para este programa.
+	private static final String fichero_log = "gohan_log.txt";
+	private static final String directorio_log = System.getProperty("user.home")+"/AST/log";
 	
 	//Nombres de los servicios en UDDI
 	private static final String name_service_card = "CreditCardValidator ";
-	
-	//Nombre y localización del fichero de logs para este programa.
-	private static final String fichero_log = "/home/bruno/AST/db/gohan_log.txt";
 	
 	ServiceClient sc1;
 	ServiceClient sc2;
@@ -216,10 +221,13 @@ public class Gohan implements ServiceLifeCycle {
 		//Mapa de tarjeta - saldo.
 		HashMap<String, Double> saldos = new HashMap<String, Double>();
 		
+		File dir = new File(directorio_saldos);
+		dir.mkdirs();
+		
 		//Lectura de todos los saldos de tarjeta y carga en el mapa.
 		try
 		 {
-			in = new BufferedReader(new FileReader(fichero_saldos));
+			in = new BufferedReader(new FileReader(dir+"/"+fichero_saldos));
 			String l_saldo="";
 			
 			while((l_saldo=in.readLine())!=null)
@@ -277,7 +285,7 @@ public class Gohan implements ServiceLifeCycle {
 		//Almacenamiento de los saldos en el fichero.
 		try
 		 {
-			out = new BufferedWriter(new FileWriter(fichero_saldos));
+			out = new BufferedWriter(new FileWriter(dir+"/"+fichero_saldos));
 			for(Entry<String, Double> entry: saldos.entrySet())
 			 {
 				out.write(entry.getKey()+"-.-"+entry.getValue()+"\n");
@@ -315,10 +323,14 @@ public class Gohan implements ServiceLifeCycle {
 	public static void log(String datos)
 	 {
 		BufferedWriter out = null;
+		
+		File dir = new File(directorio_log);
+		dir.mkdirs();
+		
 		try
 		 {
 			Date fecha = new Date();
-			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out = new BufferedWriter(new FileWriter(dir+"/"+fichero_log, true));   
 			out.write(fecha+":"+" Gohan -- "+datos+"\n");
 		 }
 		catch(Exception e1)
@@ -351,13 +363,14 @@ public class Gohan implements ServiceLifeCycle {
 	 */
 	public int abonarImporte(String tarjeta, double importe, String f_cad)
 	 {
+		int salida=0;
 		//En caso de importe negativo retornamos con un código de error.
 		if(importe<0)
 			return -7;
 		
 		//Comentamos para realizar pruebas iniciales, debido al excesivo consumo de tiempo que supone realizar todas las comprobaciones (Estaba hasta os huevos de esperar por esto)
-		if(comprobar_tarjeta(tarjeta, f_cad)<0)
-			return -6;
+		if((salida=comprobar_tarjeta(tarjeta, f_cad))<0)
+			return salida;
 		//Debido a que está comentado sustituimos por unos parámetro correctos.
 		/*tipo_tarjeta="VISA";
 		largo=true;
@@ -403,6 +416,7 @@ public class Gohan implements ServiceLifeCycle {
 	 */
 	public int realizarPago(String tarjeta, double importe, String f_cad)
 	 {
+		int salida=0;
 		//En caso de importe negativo retornamos con un código de error.
 		if(importe<0)
 			return -7;
@@ -410,8 +424,8 @@ public class Gohan implements ServiceLifeCycle {
 		double saldo_final=0;
 		
 		//Comentamos para realizar pruebas iniciales, debido al excesivo consumo de tiempo que supone realizar todas las comprobaciones (Estaba hasta os huevos de esperar por esto)
-		if(comprobar_tarjeta(tarjeta, f_cad)<0)
-			return -6;
+		if((salida=comprobar_tarjeta(tarjeta, f_cad))<0)
+			return salida;
 		//Debido a que está comentado sustituimos por unos parámetro correctos.
 		/*tipo_tarjeta="VISA";
 		largo=true;
@@ -464,6 +478,10 @@ public class Gohan implements ServiceLifeCycle {
 	private int comprobar_tarjeta(String tarjeta, String f_cad)
 	 {
 		Servicio Ccard = new Servicio(name_service_card);
+		if(Ccard.getError()==-100 || Ccard.getError()==-101)
+		 {
+			return Ccard.getError()-40;
+		 }
 		
 		try
 		 {
@@ -527,7 +545,7 @@ public class Gohan implements ServiceLifeCycle {
 		catch(Exception e)
 		 {
 			log(e.toString());
-			return -1;
+			return -6;
 		 }		
 		return 1;
 	 }
