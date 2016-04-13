@@ -2,7 +2,7 @@
 <!-- This file was auto-generated from WSDL -->
 <!-- by the Apache Axis2 version: 1.7.0  Built on : Jan 18, 2016 (09:41:27 GMT) -->
 <serviceGroup>
-    <service name="Goku" class='org.apache.ws.axis2.Goku'>
+    <service name="Goku" class='org.apache.ws.axis2'>
         <messageReceivers>
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only" class="org.apache.ws.axis2.GokuMessageReceiverInOnly"/>
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.apache.ws.axis2.GokuMessageReceiverInOut"/>

@@ -10,8 +10,7 @@ package org.apache.ws.axis2.xsd;
 /**
  *  Partido bean class
  */
-@SuppressWarnings({"unchecked",
-    "unused"
+@SuppressWarnings({"unused", "serial"
 })
 public class Partido implements org.apache.axis2.databinding.ADBBean {
     /* This type was generated from the piece of schema that had
@@ -530,7 +529,8 @@ public class Partido implements org.apache.axis2.databinding.ADBBean {
 
                 // Note all attributes that were handled. Used to differ normal attributes
                 // from anyAttributes.
-                java.util.Vector handledAttributes = new java.util.Vector();
+                @SuppressWarnings("rawtypes")
+				java.util.Vector handledAttributes = new java.util.Vector();
 
                 reader.next();
 

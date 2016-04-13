@@ -11,7 +11,7 @@ package org.apache.ws.axis2;
  *  ListarJugadoresEquipoResponse bean class
  */
 @SuppressWarnings({"unchecked",
-    "unused"
+    "unused", "serial"
 })
 public class ListarJugadoresEquipoResponse implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.apache.org/axis2",
@@ -71,7 +71,8 @@ public class ListarJugadoresEquipoResponse implements org.apache.axis2.databindi
         //update the setting tracker
         localJugadoresTracker = true;
 
-        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localJugadores);
+        @SuppressWarnings("rawtypes")
+		java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localJugadores);
         list.add(param);
         this.localJugadores = (java.lang.String[]) list.toArray(new java.lang.String[list.size()]);
     }
@@ -429,11 +430,13 @@ public class ListarJugadoresEquipoResponse implements org.apache.axis2.databindi
 
                 // Note all attributes that were handled. Used to differ normal attributes
                 // from anyAttributes.
-                java.util.Vector handledAttributes = new java.util.Vector();
+                @SuppressWarnings("rawtypes")
+				java.util.Vector handledAttributes = new java.util.Vector();
 
                 reader.next();
 
-                java.util.ArrayList list1 = new java.util.ArrayList();
+                @SuppressWarnings("rawtypes")
+				java.util.ArrayList list1 = new java.util.ArrayList();
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();

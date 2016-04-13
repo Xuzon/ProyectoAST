@@ -4,6 +4,7 @@ package org.apache.ws.axis2;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.AxisFault;
@@ -34,10 +36,13 @@ import org.w3c.dom.NodeList;
 public class Goku implements ServiceLifeCycle {
 	
 	//Nombre y localización del fichero para almacenar los importes de cada apuesta y datos de la tarjeta.
-	private static final String fichero_imp_apuestas = "/home/bruno/AST/db/importe_apuestas.txt";
+	private static final String fichero_imp_apuestas = "importe_apuestas.txt";
+	private static final String directorio_imp_apuestas = System.getProperty("user.home")+"/AST/db";
+
 	
 	//Nombre y localización del fichero de logs para este programa.
-	private static final String fichero_log = "/home/bruno/AST/db/goku_log.txt";
+	private static final String fichero_log = "goku_log.txt";
+	private static final String directorio_log = System.getProperty("user.home")+"/AST/log";
 	
 	//Nombres de los servicios en UDDI
 	private static final String name_service_goten = "Goten";
@@ -53,6 +58,8 @@ public class Goku implements ServiceLifeCycle {
 	private static final String service_key = "uddi:localhost:servicios-propios-"+service_name.toLowerCase();
 	private static final String business_key = "uddi:localhost:key";
 	
+	//Contraseña para función hash
+	private static final String pass = "password";
 	
 	/**
 	 * Método que se ejecuta al iniciar el servicio en axis2.
@@ -175,7 +182,6 @@ public class Goku implements ServiceLifeCycle {
 			opts.setTo(new EndpointReference(dir_uddi_publish));
 			
 			opts.setAction("delete_service");
-			//uddi:localhost:key
 			sc.setOptions(opts);
 			sc.sendRobust(delete_service(res.getFirstElement().getText(), service_key));
 			
@@ -185,8 +191,6 @@ public class Goku implements ServiceLifeCycle {
 		 {
 			log(e.toString());
 		 }
-		
-		
 		
 		log("Se ha finalizado el servicio.");
 	}
@@ -201,37 +205,43 @@ public class Goku implements ServiceLifeCycle {
 	 {
 		String apuesta="-1";
 		BufferedReader in = null;
-		try
-		 {
-			in = new BufferedReader(new FileReader(fichero_imp_apuestas));
-			String l_apuesta="";
-			while((l_apuesta=in.readLine())!=null)
-			 {
-				if(l_apuesta.equals("")) continue;
-				if(l_apuesta.split("-.-")[0].equals(id_a))
-				 {
-					apuesta = l_apuesta.split("-.-")[1];
-					break;
-				 }
-			 }
-		 }
-		catch(IOException ioe)
-		 {
-			log(ioe.toString());
-		 }
-		finally
+		File f = new File(directorio_imp_apuestas+"/"+fichero_imp_apuestas);
+		
+		//Leemos el fichero solo si existe.
+		if(f.exists())
 		 {
 			try
+			 {
+				in = new BufferedReader(new FileReader(f));
+				String l_apuesta="";
+				while((l_apuesta=in.readLine())!=null)
 				 {
-				if( null != in )
-				 {
-					in.close();
+					if(l_apuesta.equals("")) continue;
+					if(l_apuesta.split("-.-")[0].equals(id_a))
+					 {
+						apuesta = l_apuesta.split("-.-")[1];
+						break;
+					 }
 				 }
 			 }
-			catch (Exception e2)
+			catch(IOException ioe)
 			 {
-				log(e2.toString());
-				return null;
+				log(ioe.toString());
+			 }
+			finally
+			 {
+				try
+					 {
+					if( null != in )
+					 {
+						in.close();
+					 }
+				 }
+				catch (Exception e2)
+				 {
+					log(e2.toString());
+					return null;
+				 }
 			 }
 		 }
 		return apuesta;
@@ -245,9 +255,12 @@ public class Goku implements ServiceLifeCycle {
 	private static void guardarApuesta(int id_a, String datos)
 	 {
 		BufferedWriter out = null;
+		
+		File dir = new File(directorio_imp_apuestas);
+		dir.mkdirs();
 		try
 		 {
-			out = new BufferedWriter(new FileWriter(fichero_imp_apuestas, true));   
+			out = new BufferedWriter(new FileWriter(dir+"/"+fichero_imp_apuestas, true));   
 			out.write(id_a+"-.-"+datos+"\n");
 		 }
 		catch(Exception e1)
@@ -276,13 +289,15 @@ public class Goku implements ServiceLifeCycle {
 	 * Se añade la fecha y hora del error, así como el nombre del programa desde el que se ha generado.
 	 * @param datos -> Información del error.
 	 */
-	public static void log(String datos)
+	private static void log(String datos)
 	 {
 		BufferedWriter out = null;
+		File dir = new File(directorio_log);
+		dir.mkdirs();
 		try
 		 {
 			Date fecha = new Date();
-			out = new BufferedWriter(new FileWriter(fichero_log, true));   
+			out = new BufferedWriter(new FileWriter(dir+"/"+fichero_log, true));   
 			out.write(fecha+":"+" Goku -- "+datos+"\n");
 		 }
 		catch(Exception e1)
@@ -323,7 +338,11 @@ public class Goku implements ServiceLifeCycle {
 		importe = Math.rint(importe*100)/100;
 		
 		Servicio Gohan = new Servicio(name_service_gohan);
+		if(Gohan.getError()==-100 || Gohan.getError()==-101)
+			return Gohan.getError()-10;
 		Servicio Goten = new Servicio(name_service_goten);
+		if(Goten.getError()==-100 || Goten.getError()==-101)
+			return Goten.getError()-20;
 		
 		OMElement res_pago = null;
 		ServiceClient sc = null;
@@ -339,12 +358,11 @@ public class Goku implements ServiceLifeCycle {
 			opts = new Options();
 			
 			opts.setAction("realizarPago");
-			log(Gohan.getEndpoint());
+
 			//Asignamos en las opciones la referencia al servicio interno de pagos.
 			opts.setTo(new EndpointReference(Gohan.getEndpoint()));
 			sc.setOptions(opts);
 
-			
 			res_pago = sc.sendReceive(realizarPago(tarjeta, importe+"", f_cad));
 
 			error = Integer.parseInt(res_pago.getFirstElement().getText());
@@ -376,6 +394,14 @@ public class Goku implements ServiceLifeCycle {
 			opts.setTo(new EndpointReference(Goten.getEndpoint()));
 			sc.setOptions(opts);
 			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+""));
+			
+			
+			//Insertamos la cabecera con el hash para autentificarnos en el sistema.
+			OMFactory fac = OMAbstractFactory.getOMFactory();
+			OMNamespace omNs = fac.createOMNamespace("", "");
+			OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
+			cabeceraHash.setText(pass.hashCode()+"");
+			sc.addHeader(cabeceraHash);
 			
 			//Obtengo del OMElement el id de apuesta.
 			id_a = Integer.parseInt(res_apuesta.getFirstElement().getText());
@@ -419,7 +445,11 @@ public class Goku implements ServiceLifeCycle {
 		importe = Math.rint(importe*100)/100;
 		
 		Servicio Gohan = new Servicio(name_service_gohan);
+		if(Gohan.getError()==-100 || Gohan.getError()==-101)
+			return Gohan.getError()-10;
 		Servicio Goten = new Servicio(name_service_goten);
+		if(Goten.getError()==-100 || Goten.getError()==-101)
+			return Goten.getError()-20;
 		
 		ServiceClient sc = null;
 		Options opts = null;
@@ -469,6 +499,14 @@ public class Goku implements ServiceLifeCycle {
 			opts.setTo(new EndpointReference(Goten.getEndpoint()));
 			sc.setOptions(opts);
 			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador));
+			
+			//Insertamos la cabecera con el hash para autentificarnos en el sistema.
+			OMFactory fac = OMAbstractFactory.getOMFactory();
+			OMNamespace omNs = fac.createOMNamespace("", "");
+			OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
+			cabeceraHash.setText(pass.hashCode()+"");
+			sc.addHeader(cabeceraHash);
+			
 			
 			//Obtengo del OMElement el id de apuesta.
 			id_a = Integer.parseInt(res.getFirstElement().getText());
@@ -540,11 +578,11 @@ public class Goku implements ServiceLifeCycle {
 				//Asignamos en las opciones la referencia al servicio interno de pagos.
 				opts.setTo(new EndpointReference(Gohan.getEndpoint()));
 				sc.setOptions(opts);
+				@SuppressWarnings("unused")
 				OMElement res_pago = sc.sendReceive(abonarImporte(tarjeta, importe_pagar+"", f_cad));
 				
 				//En caso de que el pago no se llegase a realizar es necesario indicarlo
 				//Falta implementar en el documento el cobro o no de la apuesta.
-				System.out.println(res_pago.getFirstElement().getText());
 				sc.cleanupTransport();
 			 }
 			catch(AxisFault af)
@@ -574,6 +612,8 @@ public class Goku implements ServiceLifeCycle {
 		double cuota=0, importe=0;
 		
 		Servicio Goten = new Servicio(name_service_goten);
+		if(Goten.getError()==-100 || Goten.getError()==-101)
+			return Goten.getError()-20;
 		
 		//Obtenemos los datos de la apueta
 		datos = verApuesta(id_a+"");
@@ -600,6 +640,15 @@ public class Goku implements ServiceLifeCycle {
 				//Asignamos en las opciones la referencia al servicio externo.
 				opts.setTo(new EndpointReference(Goten.getEndpoint()));
 				sc.setOptions(opts);
+				
+				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
+				OMFactory fac = OMAbstractFactory.getOMFactory();
+				OMNamespace omNs = fac.createOMNamespace("", "");
+				OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
+				cabeceraHash.setText(pass.hashCode()+"");
+				sc.addHeader(cabeceraHash);
+				
+				
 				OMElement res = sc.sendReceive(comprobarApuestaPartido(id_a+""));
 								
 				//Obtengo del OMElement el id de apuesta.
@@ -641,13 +690,19 @@ public class Goku implements ServiceLifeCycle {
 				sc.setOptions(opts);
 				OMElement res = sc.sendReceive(comprobarApuestaPichichi(id_a+""));
 				
+				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
+				OMFactory fac = OMAbstractFactory.getOMFactory();
+				OMNamespace omNs = fac.createOMNamespace("", "");
+				OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
+				cabeceraHash.setText(pass.hashCode()+"");
+				sc.addHeader(cabeceraHash);
+				
+				
 				//Obtengo del OMElement el id de apuesta.
 				cuota = Double.parseDouble(res.getFirstElement().getText());
 				
 				sc.cleanupTransport();
-				
-				System.out.println(cuota);
-				
+								
 				//Si la cuota es negativa es que ha sucedido algún error.
 				if(cuota<0)
 					return cuota;
@@ -693,6 +748,11 @@ public class Goku implements ServiceLifeCycle {
 		ArrayList<String> lista = new ArrayList<String>();
 		
 		Servicio Mundial = new Servicio(name_service_mundial);
+		if(Mundial.getError()==-100 || Mundial.getError()==-101)
+		 {
+			lista.add("Error: "+(Mundial.getError()-30));
+			return lista;
+		 }
 		
 		try
 		 {
@@ -720,12 +780,26 @@ public class Goku implements ServiceLifeCycle {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			lista.clear();
+			lista.add("Error: -1");
+		 }
+		catch(OMException oe)
+		 {
+			log(oe.toString());
+			lista.clear();
+			lista.add("Error: -2");
+		 }
 		catch(Exception e)
 		 {
 			log(e.toString());
-			return null;
+			lista.clear();
+			lista.add("Error: -3");
 		 }
 		
+		if(lista.size()==0) return null;
 		return lista;
 	 }
 	
@@ -735,11 +809,17 @@ public class Goku implements ServiceLifeCycle {
 	 * @param equipo -> Nombre del equipo al que petenecen los jugadores que queremos obtener. En caso de vacio obtendrá todos los jugadores de cualquier equipo.
 	 * @return -> Listado de Jugadores.
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> listarJugadoresEquipo(String equipo)
 	 {
 		ArrayList<String> lista = new  ArrayList<String>();
 		
 		Servicio Mundial = new Servicio(name_service_mundial);
+		if(Mundial.getError()==-100 || Mundial.getError()==-101)
+		 {
+			lista.add("Error: "+(Mundial.getError()-30));
+			return lista;
+		 }
 		
 		//En caso de que el equipo sea null o una cadena vacia, llamaremos a un servicio para obtener todos los jugadores de la competición
 		//En otro caso llamaremos al servicio externo que nos proporciona toda la información de un equipo en concreto para extraer los nombre de los jugadores.
@@ -767,10 +847,23 @@ public class Goku implements ServiceLifeCycle {
 				 }
 				sc.cleanupTransport();
 			 }
+			catch(AxisFault af)
+			 {
+				log(af.toString());
+				lista.clear();
+				lista.add("Error: -1");
+			 }
+			catch(OMException oe)
+			 {
+				log(oe.toString());
+				lista.clear();
+				lista.add("Error: -2");
+			 }
 			catch(Exception e)
 			 {
 				log(e.toString());
-				return null;
+				lista.clear();
+				lista.add("Error: -3");
 			 }
 		 }
 		else
@@ -805,13 +898,27 @@ public class Goku implements ServiceLifeCycle {
 				sc.cleanupTransport();
 			
 			 }
+			catch(AxisFault af)
+			 {
+				log(af.toString());
+				lista.clear();
+				lista.add("Error: -4");
+			 }
+			catch(OMException oe)
+			 {
+				log(oe.toString());
+				lista.clear();
+				lista.add("Error: -5");
+			 }
 			catch(Exception e)
 			 {
 				log(e.toString());
-				return null;
+				lista.clear();
+				lista.add("Error: -6");
 			 }
 		 }
 		
+		if(lista.size()==0) return null;
 		return lista;
 	 }
 	
@@ -828,6 +935,11 @@ public class Goku implements ServiceLifeCycle {
 		String local="", visitante="";
 		
 		Servicio Mundial = new Servicio(name_service_mundial);
+		if(Mundial.getError()==-100 || Mundial.getError()==-101)
+		 {
+			listado.add(new Partido(Mundial.getError()-30, "Error: "+(Mundial.getError()-30), ""));
+			return listado;
+		 }
 		
 		try
 		 {
@@ -844,6 +956,7 @@ public class Goku implements ServiceLifeCycle {
 			//Llamamos al servicio externo para obtener la información de todos los partidos del calendario en la competición.
 			sc.setOptions(opts);
 			OMElement res = sc.sendReceive(allGames());
+			@SuppressWarnings("unchecked")
 			Iterator<OMElement> it1 = res.getFirstElement().getChildElements();
 			OMElement partido;
 			
@@ -864,11 +977,26 @@ public class Goku implements ServiceLifeCycle {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			listado.clear();
+			listado.add(new Partido(-1, "Error: -1", ""));
+		 }
+		catch(OMException oe)
+		 {
+			log(oe.toString());
+			listado.clear();
+			listado.add(new Partido(-2, "Error: -2", ""));
+		 }
 		catch(Exception e)
 		 {
 			log(e.toString());
-			return null;
+			listado.clear();
+			listado.add(new Partido(-3, "Error: -3", ""));
 		 }
+		
+		if(listado.size()==0) return null;
 		return listado;
 	 }
 	
@@ -884,6 +1012,10 @@ public class Goku implements ServiceLifeCycle {
 		String local="", visitante="";
 		
 		Servicio Mundial = new Servicio(name_service_mundial);
+		if(Mundial.getError()==-100 || Mundial.getError()==-101)
+		 {
+			return (new Partido(Mundial.getError()-30, "Error: "+(Mundial.getError()-30), ""));
+		 }
 		
 		try
 		 {
@@ -909,12 +1041,24 @@ public class Goku implements ServiceLifeCycle {
 			sc.cleanupTransport();
 			
 		 }
+		catch(AxisFault af)
+		 {
+			log(af.toString());
+			if(af.getMessage().contains("Game ID not found!"))
+				return null;
+			return (new Partido(-1, "Error: -1", ""));
+		 }
+		catch(OMException oe)
+		 {
+			log(oe.toString());
+			return (new Partido(-2, "Error: -2", ""));
+		 }
 		catch(Exception e)
 		 {
 			log(e.toString());
-			return null;
+			return (new Partido(-3, "Error: -3", ""));
 		 }
-		
+		if(id==0) return null;
 		return new Partido(id, local, visitante);
 	 }
 	

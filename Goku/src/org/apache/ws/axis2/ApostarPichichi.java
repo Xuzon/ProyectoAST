@@ -10,8 +10,7 @@ package org.apache.ws.axis2;
 /**
  *  ApostarPichichi bean class
  */
-@SuppressWarnings({"unchecked",
-    "unused"
+@SuppressWarnings({"unused", "serial"
 })
 public class ApostarPichichi implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.apache.org/axis2",
@@ -512,7 +511,8 @@ public class ApostarPichichi implements org.apache.axis2.databinding.ADBBean {
 
                 // Note all attributes that were handled. Used to differ normal attributes
                 // from anyAttributes.
-                java.util.Vector handledAttributes = new java.util.Vector();
+                @SuppressWarnings("rawtypes")
+				java.util.Vector handledAttributes = new java.util.Vector();
 
                 reader.next();
 

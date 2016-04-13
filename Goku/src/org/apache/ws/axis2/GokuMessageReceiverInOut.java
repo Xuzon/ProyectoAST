@@ -154,6 +154,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
     }
 
     //
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ComprobarApuesta param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -165,6 +166,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ComprobarApuestaResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -176,6 +178,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.GetPartido param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -187,6 +190,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.GetPartidoResponse param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -198,6 +202,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ApuestaFinalizada param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -209,6 +214,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ListarPartidos param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -220,6 +226,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ListarPartidosResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -231,6 +238,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ApostarPartido param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -242,6 +250,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ApostarPartidoResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -253,6 +262,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ApostarPichichi param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -264,6 +274,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ApostarPichichiResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -275,6 +286,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ListarEquipos param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -286,6 +298,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ListarEquiposResponse param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -297,6 +310,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ListarJugadoresEquipo param, boolean optimizeContent)
         throws org.apache.axis2.AxisFault {
@@ -308,6 +322,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axiom.om.OMElement toOM(
         org.apache.ws.axis2.ListarJugadoresEquipoResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
@@ -338,6 +353,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ComprobarApuestaResponse wrapcomprobarApuesta() {
         org.apache.ws.axis2.ComprobarApuestaResponse wrappedElement = new org.apache.ws.axis2.ComprobarApuestaResponse();
 
@@ -362,6 +378,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.GetPartidoResponse wrapgetPartido() {
         org.apache.ws.axis2.GetPartidoResponse wrappedElement = new org.apache.ws.axis2.GetPartidoResponse();
 
@@ -386,6 +403,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ListarPartidosResponse wraplistarPartidos() {
         org.apache.ws.axis2.ListarPartidosResponse wrappedElement = new org.apache.ws.axis2.ListarPartidosResponse();
 
@@ -410,6 +428,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ApostarPartidoResponse wrapapostarPartido() {
         org.apache.ws.axis2.ApostarPartidoResponse wrappedElement = new org.apache.ws.axis2.ApostarPartidoResponse();
 
@@ -435,6 +454,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ApostarPichichiResponse wrapapostarPichichi() {
         org.apache.ws.axis2.ApostarPichichiResponse wrappedElement = new org.apache.ws.axis2.ApostarPichichiResponse();
 
@@ -459,6 +479,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ListarEquiposResponse wraplistarEquipos() {
         org.apache.ws.axis2.ListarEquiposResponse wrappedElement = new org.apache.ws.axis2.ListarEquiposResponse();
 
@@ -484,6 +505,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         }
     }
 
+    @SuppressWarnings("unused")
     private org.apache.ws.axis2.ListarJugadoresEquipoResponse wraplistarJugadoresEquipo() {
         org.apache.ws.axis2.ListarJugadoresEquipoResponse wrappedElement = new org.apache.ws.axis2.ListarJugadoresEquipoResponse();
 
@@ -493,13 +515,14 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
     /**
      *  get the default envelope
      */
+    @SuppressWarnings("unused")
     private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
         org.apache.axiom.soap.SOAPFactory factory) {
         return factory.getDefaultEnvelope();
     }
 
     private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
-        java.lang.Class type) throws org.apache.axis2.AxisFault {
+        @SuppressWarnings("rawtypes") java.lang.Class type) throws org.apache.axis2.AxisFault {
         try {
             if (org.apache.ws.axis2.ApostarPartido.class.equals(type)) {
                 return org.apache.ws.axis2.ApostarPartido.Factory.parse(param.getXMLStreamReaderWithoutCaching());
@@ -568,6 +591,7 @@ public class GokuMessageReceiverInOut extends org.apache.axis2.receivers.Abstrac
         return null;
     }
 
+    @SuppressWarnings("unused")
     private org.apache.axis2.AxisFault createAxisFault(java.lang.Exception e) {
         org.apache.axis2.AxisFault f;
         Throwable cause = e.getCause();

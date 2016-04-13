@@ -11,7 +11,7 @@ package org.apache.ws.axis2;
  *  ListarPartidosResponse bean class
  */
 @SuppressWarnings({"unchecked",
-    "unused"
+    "unused", "serial"
 })
 public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://ws.apache.org/axis2",
@@ -71,7 +71,8 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
         //update the setting tracker
         localPartidosTracker = true;
 
-        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localPartidos);
+        @SuppressWarnings("rawtypes")
+		java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localPartidos);
         list.add(param);
         this.localPartidos = (org.apache.ws.axis2.xsd.Partido[]) list.toArray(new org.apache.ws.axis2.xsd.Partido[list.size()]);
     }
@@ -420,11 +421,13 @@ public class ListarPartidosResponse implements org.apache.axis2.databinding.ADBB
 
                 // Note all attributes that were handled. Used to differ normal attributes
                 // from anyAttributes.
-                java.util.Vector handledAttributes = new java.util.Vector();
+                @SuppressWarnings("rawtypes")
+				java.util.Vector handledAttributes = new java.util.Vector();
 
                 reader.next();
 
-                java.util.ArrayList list1 = new java.util.ArrayList();
+                @SuppressWarnings("rawtypes")
+				java.util.ArrayList list1 = new java.util.ArrayList();
 
                 while (!reader.isStartElement() && !reader.isEndElement())
                     reader.next();
