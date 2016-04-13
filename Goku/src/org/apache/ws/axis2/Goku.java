@@ -86,13 +86,21 @@ public class Goku implements ServiceLifeCycle {
 		
 
 		String ip = "";
-		try
-		 {
-			NetworkInterface interfaz = NetworkInterface.getByName("wlan0");
-			ip = interfaz.getInterfaceAddresses().get(3).getAddress().getHostAddress();
-		 }
-		catch(Exception e)
-		 {
+		try{
+		    Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
+		    for (; n.hasMoreElements();){
+		        NetworkInterface e = n.nextElement();
+		        Enumeration<InetAddress> a = e.getInetAddresses();
+		        for (; a.hasMoreElements();){
+		            InetAddress addr = a.nextElement();
+		            String ipTemp = addr.getHostAddress();
+		            if(ipTemp.contains("192.") || ipTemp.contains("10.")){
+		            	ip = ipTemp;
+		            	break;
+		            }
+		        }
+		    }
+		 }catch(Exception e){
 			log(e.toString());
 		 }
 		
