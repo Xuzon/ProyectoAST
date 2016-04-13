@@ -1,9 +1,2 @@
-/Gohan.class
-/Goku.class
-/Goten.class
-/Goten$hiloComprobacion.class
-/LogHandler.class
-/Callback_Gohan.class
-/lanzador.class
-/Partido.class
-/cliente.class
+*.class
+*.aar
