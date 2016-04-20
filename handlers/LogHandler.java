@@ -42,6 +42,7 @@ public class LogHandler extends AbstractHandler{
 		}
 	}
 	
+	//Método para formatear el mensaje XML
 	public String formatXML(String input)
 	 {
 	    try
@@ -61,6 +62,7 @@ public class LogHandler extends AbstractHandler{
 	     }
 	 }
 	 
+	//Método para parsear el mensaje xml
 	private Document parseXml(String in)
 	 {
 	    try
