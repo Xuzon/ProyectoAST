@@ -12,9 +12,8 @@ import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.net.NetworkInterface;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
@@ -54,6 +53,9 @@ public class Goten implements ServiceLifeCycle {
 	private static final String service_name = "Goten";
 	private static final String service_key = "uddi:localhost:servicios-propios-"+service_name.toLowerCase();
 	private static final String business_key = "uddi:localhost:key";
+	
+	//Contraseña para función hash
+	private static final String pass = "password";
 	
 	/**
 	 * Método que se ejecuta al iniciar el servicio en axis2.
@@ -382,7 +384,7 @@ public class Goten implements ServiceLifeCycle {
 		
 		try
 		 {
-			cuota = Double.parseDouble(datos[3]);
+			cuota = Double.parseDouble(datos[4]);
 			
 			
 			//POSTUREO, NO TOCAR.
@@ -399,7 +401,7 @@ public class Goten implements ServiceLifeCycle {
 	
 			//Llamamos al servicio GetCardType
 			sc.setOptions(opts);
-			res = sc.sendReceive(gameInfo(datos[0]));
+			res = sc.sendReceive(gameInfo(datos[1]));
 		
 			//Obtenemos los resultados del partido que corresponde a la apuesta.
 			//Separamos los goles del visitante y del local.
@@ -421,7 +423,7 @@ public class Goten implements ServiceLifeCycle {
 		
 		//En caso de que la apuesta haya sido acertada retornamos la cuota de la apuesta.
 		//En otro caso retornamos 0.
-		if(goles1.equals(datos[1]) && goles2.equals(datos[2]))
+		if(goles1.equals(datos[2]) && goles2.equals(datos[3]))
 		 {
 			return cuota;
 		 }
@@ -462,7 +464,7 @@ public class Goten implements ServiceLifeCycle {
 		try
 		 {
 			
-			cuota = Double.parseDouble(datos[1]);
+			cuota = Double.parseDouble(datos[2]);
 			
 			//POSTUREO, NO TOCAR.
 			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
@@ -509,17 +511,17 @@ public class Goten implements ServiceLifeCycle {
 	
 		//Si el jugador por el que se a apostado se sitúa de primero en la lista de goleadores se devuelve la cuota integra, en caso de estar en segundo lugar
 		//se devuelve la mitad de la cuota y en caso de estar de tercero la cuarta parte de la cuota, en otro caso 0.
-		if(datos[0].equals(goleadores.get(0)))
+		if(datos[1].equals(goleadores.get(0)))
 		 {
 			return cuota;
 		 }
-		else if(datos[0].equals(goleadores.get(1)))
+		else if(datos[1].equals(goleadores.get(1)))
 		 {
 			cuota = cuota/2;
 			cuota = Math.rint(cuota*100)/100;
 			return cuota;
 		 }
-		else if(datos[0].equals(goleadores.get(2)))
+		else if(datos[1].equals(goleadores.get(2)))
 		 {
 			cuota = cuota/4;
 			cuota = Math.rint(cuota*100)/100;
@@ -561,7 +563,7 @@ public class Goten implements ServiceLifeCycle {
 		cuota = Math.rint(cuota*100)/100;
 		
 		//Almacenamos la apuesta.
-		guardarApuesta(id_a, id_p+"//"+goles_e1+"//"+goles_e2+"//"+cuota);
+		guardarApuesta(id_a, "A//"+id_p+"//"+goles_e1+"//"+goles_e2+"//"+cuota);
 		
 		return id_a;
 	 }
@@ -598,7 +600,7 @@ public class Goten implements ServiceLifeCycle {
 		cuota = Math.rint(cuota*100)/100;
 		
 		//Almacenamos los datos de la apuesta.
-		guardarApuesta(id_a, jugador+"//"+cuota);
+		guardarApuesta(id_a, "B//"+jugador+"//"+cuota);
 		
 		return id_a;
 	}
@@ -612,7 +614,57 @@ public class Goten implements ServiceLifeCycle {
 	 */
 	public void partidoFinalizado(int id_p)
 	 {
-		
+		log("estas en partido finalizado");
+		BufferedReader in = null;
+		String apuesta;
+		String cuota;
+		ArrayList <Integer> id_apuesta_partido= new ArrayList <Integer>();
+		File f = new File(directorio_apuestas+"/"+fichero_apuestas);
+		Servicio goku= new Servicio("Goku");
+		if(f.exists())
+		{
+			
+			try
+			{
+				ServiceClient sc= new ServiceClient();
+				Options opt=new Options();
+				opt.setTo(new EndpointReference(goku.getEndpoint()));
+				opt.setAction("apuestaFinalizada");
+				sc.setOptions(opt);
+				
+				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
+				OMFactory fac = OMAbstractFactory.getOMFactory();
+				OMNamespace omNs = fac.createOMNamespace("", "");
+				OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
+				cabeceraHash.setText(pass.hashCode()+"");
+				sc.addHeader(cabeceraHash);
+				
+				in = new BufferedReader(new FileReader(f));
+				while((apuesta=in.readLine())!=null)
+				{
+					if(apuesta.equals("")) continue;
+					String [] datos=apuesta.split("-.-",2);
+					String id_a=datos[0];
+					String datos_apuesta=datos[1];
+					if(datos_apuesta.startsWith("A"))
+					{
+						id_apuesta_partido.add(Integer.parseInt(id_a));
+					}
+				}
+				in.close();
+				log("hasta aqui");
+				for(int i=0;i<id_apuesta_partido.size();i++)
+				{
+					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(i)));
+					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(i).toString(),cuota));
+					sc.cleanupTransport();
+				}
+			}
+			catch (Exception e)
+			{
+				log(e.toString());
+			}
+		}
 	 }
 	
 	
@@ -622,14 +674,82 @@ public class Goten implements ServiceLifeCycle {
 	 */
 	public void competicionFinalizada()
 	 {
+		log("estas en competicion finalizada");
+		BufferedReader in = null;
+		String apuesta;
+		String cuota;
+		ArrayList <Integer> id_apuesta_partido= new ArrayList <Integer>();
+		ArrayList <Integer> id_apuesta_jugador= new ArrayList <Integer>();
+		File f = new File(directorio_apuestas+"/"+fichero_apuestas);
+		Servicio goku= new Servicio("Goku");
+		if(f.exists())
+		{
+			try
+			{
+				ServiceClient sc= new ServiceClient();
+				Options opt=new Options();
+				opt.setTo(new EndpointReference(goku.getEndpoint()));
+				opt.setAction("apuestaFinalizada");
+				sc.setOptions(opt);
+				
+				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
+				OMFactory fac = OMAbstractFactory.getOMFactory();
+				OMNamespace omNs = fac.createOMNamespace("", "");
+				OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
+				cabeceraHash.setText(pass.hashCode()+"");
+				sc.addHeader(cabeceraHash);
+				
+				in = new BufferedReader(new FileReader(f));
+				while((apuesta=in.readLine())!=null)
+				{
+					if(apuesta.equals("")) continue;
+					String [] datos=apuesta.split("-.-",2);
+					String id_a=datos[0];
+					String datos_apuesta=datos[1];
+					if(datos_apuesta.startsWith("A"))
+					{
+						id_apuesta_partido.add(Integer.parseInt(id_a));
+					}
+					else
+					{
+						id_apuesta_jugador.add(Integer.parseInt(id_a));
+					}
+				}
+				in.close();
+				for(int j=0;j<id_apuesta_jugador.size();j++)
+				{
+					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_jugador.get(j)));
+					sc.sendRobust(apuestaFinalizada(id_apuesta_jugador.get(j).toString(),cuota));
+					sc.cleanupTransport();
+				}
+			}
+			catch (Exception e)
+			{
+				log(e.toString());
+			}
+		}
 		
 	 }
+	
 	
 	
 	//*************************************************************************************************************************//
 	//							Métodos para contruir el mensaje de llamada a cada servicio externo							   //
 	//*************************************************************************************************************************//
 
+	private OMElement apuestaFinalizada(String id_a,String cuota)
+	 {
+		OMFactory fac = OMAbstractFactory.getOMFactory();
+		OMNamespace omNs = fac.createOMNamespace("", "");
+		OMElement method = fac.createOMElement("apuestaFinalizada", omNs);
+		OMElement value= fac.createOMElement("id_apuesta",omNs);
+		OMElement value1= fac.createOMElement("cuota_resultante",omNs);
+		value.setText(id_a);
+		value1.setText(cuota);
+		method.addChild(value);
+		method.addChild(value1);
+		return method;
+	 }	
 	
 	private OMElement gameInfo(String valor)
 	 {
