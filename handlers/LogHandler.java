@@ -34,6 +34,7 @@ public class LogHandler extends AbstractHandler{
 				log = new File(absoluto + "/" + ficheroPath);
 			PrintWriter pw = new PrintWriter(new FileWriter(log,true));
 			pw.println(mensaje);
+			pw.println();//Añadimos una linea en blanco para la ayudar a la lectura de los mensajes en el log.
 			pw.flush();
 			pw.close();
 		}catch(IOException io){
