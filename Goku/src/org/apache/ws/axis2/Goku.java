@@ -14,9 +14,8 @@ import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.net.NetworkInterface;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
@@ -404,8 +403,6 @@ public class Goku implements ServiceLifeCycle {
 			//Asignamos en las opciones la referencia al servicio interno de realización de apuestas.
 			opts.setTo(new EndpointReference(Goten.getEndpoint()));
 			sc.setOptions(opts);
-			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+""));
-			
 			
 			//Insertamos la cabecera con el hash para autentificarnos en el sistema.
 			OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -413,6 +410,8 @@ public class Goku implements ServiceLifeCycle {
 			OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
 			cabeceraHash.setText(pass.hashCode()+"");
 			sc.addHeader(cabeceraHash);
+			
+			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+""));
 			
 			//Obtengo del OMElement el id de apuesta.
 			id_a = Integer.parseInt(res_apuesta.getFirstElement().getText());
@@ -494,9 +493,17 @@ public class Goku implements ServiceLifeCycle {
 			log(e.toString());
 			return -11;
 		 }
+		finally
+		 {
+			try{
+				sc.cleanupTransport();
+			 }
+			catch(Exception e)
+			 {}
+		 }
 		
 		//En caso de que ocurriese un error en el pago, cancelamos la apuesta.
-		if(error!=0)
+		if(error!=1)
 		 {
 			return error;
 		 }
@@ -509,7 +516,6 @@ public class Goku implements ServiceLifeCycle {
 			//Asignamos en las opciones la referencia al servicio externo.
 			opts.setTo(new EndpointReference(Goten.getEndpoint()));
 			sc.setOptions(opts);
-			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador));
 			
 			//Insertamos la cabecera con el hash para autentificarnos en el sistema.
 			OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -518,12 +524,11 @@ public class Goku implements ServiceLifeCycle {
 			cabeceraHash.setText(pass.hashCode()+"");
 			sc.addHeader(cabeceraHash);
 			
+			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador));			
 			
 			//Obtengo del OMElement el id de apuesta.
 			id_a = Integer.parseInt(res.getFirstElement().getText());
-			
-			sc.cleanupTransport();
-			
+						
 		 }
 		catch(AxisFault af)
 		 {
@@ -534,6 +539,14 @@ public class Goku implements ServiceLifeCycle {
 		 {
 			log(e.toString());
 			return -13;
+		 }
+		finally
+		 {
+			try{
+				sc.cleanupTransport();
+			 }
+			catch(Exception e)
+			 {}
 		 }
 		
 		//Si el id de apuesta es negativo es que ha sucedido algún error.
@@ -561,6 +574,8 @@ public class Goku implements ServiceLifeCycle {
 		double apostado=0, importe_pagar=0;
 		
 		Servicio Gohan = new Servicio(name_service_gohan);
+		
+		log("A finalizado la apuesta "+id_a+"con resultado"+result);
 		
 		if(result>1)
 		 {
@@ -658,7 +673,7 @@ public class Goku implements ServiceLifeCycle {
 				OMElement cabeceraHash = fac.createOMElement("cabeceraHash", omNs);
 				cabeceraHash.setText(pass.hashCode()+"");
 				sc.addHeader(cabeceraHash);
-				
+								
 				
 				OMElement res = sc.sendReceive(comprobarApuestaPartido(id_a+""));
 								
@@ -699,7 +714,6 @@ public class Goku implements ServiceLifeCycle {
 				//Asignamos en las opciones la referencia al servicio externo.
 				opts.setTo(new EndpointReference(Goten.getEndpoint()));
 				sc.setOptions(opts);
-				OMElement res = sc.sendReceive(comprobarApuestaPichichi(id_a+""));
 				
 				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
 				OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -708,7 +722,9 @@ public class Goku implements ServiceLifeCycle {
 				cabeceraHash.setText(pass.hashCode()+"");
 				sc.addHeader(cabeceraHash);
 				
+				OMElement res = sc.sendReceive(comprobarApuestaPichichi(id_a+""));
 				
+								
 				//Obtengo del OMElement el id de apuesta.
 				cuota = Double.parseDouble(res.getFirstElement().getText());
 				
@@ -768,7 +784,7 @@ public class Goku implements ServiceLifeCycle {
 		try
 		 {
 			//POSTUREO, NO TOCAR.
-			org.apache.log4j.BasicConfigurator.configure(new NullAppender());
+			//org.apache.log4j.BasicConfigurator.configure(new NullAppender());
 			
 			//Instanciamos el servicio de cliente y las opciones
 			ServiceClient sc = new ServiceClient();
