@@ -33,7 +33,7 @@ public class LogHandler extends AbstractHandler{
 			if(log == null)
 				log = new File(absoluto + "/" + ficheroPath);
 			PrintWriter pw = new PrintWriter(new FileWriter(log,true));
-			pw.println(mensaje);
+			pw.println(formatXML(mensaje));
 			pw.println();//Añadimos una linea en blanco para la ayudar a la lectura de los mensajes en el log.
 			pw.flush();
 			pw.close();
@@ -41,5 +41,38 @@ public class LogHandler extends AbstractHandler{
 			return;
 		}
 	}
-
+	
+	public String formatXML(String input)
+	 {
+	    try
+	     {
+	        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+	        StreamResult result = new StreamResult(new StringWriter());
+	        DOMSource source = new DOMSource(parseXml(input));
+	        transformer.transform(source, result);
+	        return result.getWriter().toString();
+	     }
+	    catch (Exception e)
+	     {
+	        e.printStackTrace();
+	        return input;
+	     }
+	 }
+	 
+	private Document parseXml(String in)
+	 {
+	    try
+	     {
+	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder db = dbf.newDocumentBuilder();
+	        InputSource is = new InputSource(new StringReader(in));
+	        return db.parse(is);
+	     }
+	    catch (Exception e)
+	     {
+	        throw new RuntimeException(e);
+	     }
+	 }
 }
