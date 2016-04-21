@@ -575,7 +575,7 @@ public class Goku implements ServiceLifeCycle {
 		
 		Servicio Gohan = new Servicio(name_service_gohan);
 		
-		log("A finalizado la apuesta "+id_a+"con resultado"+result);
+		log("A finalizado la apuesta "+id_a+" con resultado "+result);
 		
 		if(result>1)
 		 {
