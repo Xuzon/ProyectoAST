@@ -618,6 +618,7 @@ public class Goten implements ServiceLifeCycle {
 		BufferedReader in = null;
 		String apuesta;
 		String cuota;
+		int id_partido_listado;
 		ArrayList <Integer> id_apuesta_partido= new ArrayList <Integer>();
 		File f = new File(directorio_apuestas+"/"+fichero_apuestas);
 		Servicio goku= new Servicio("Goku");
@@ -648,13 +649,15 @@ public class Goten implements ServiceLifeCycle {
 					String datos_apuesta=datos[1];
 					if(datos_apuesta.startsWith("A"))
 					{
-						id_apuesta_partido.add(Integer.parseInt(id_a));
+						id_partido_listado = Integer.parseInt(datos_apuesta.split("//")[1]);
+						if(id_p == id_partido_listado)
+							id_apuesta_partido.add(Integer.parseInt(id_a));
 					}
 				}
 				in.close();
 				log("hasta aqui");
 				for(int i=0;i<id_apuesta_partido.size();i++)
-				{
+				{					
 					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(i)));
 					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(i).toString(),cuota));
 					sc.cleanupTransport();
@@ -691,7 +694,7 @@ public class Goten implements ServiceLifeCycle {
 				opt.setTo(new EndpointReference(goku.getEndpoint()));
 				opt.setAction("apuestaFinalizada");
 				sc.setOptions(opt);
-				
+								
 				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
 				OMFactory fac = OMAbstractFactory.getOMFactory();
 				OMNamespace omNs = fac.createOMNamespace("", "");
@@ -717,9 +720,15 @@ public class Goten implements ServiceLifeCycle {
 				}
 				in.close();
 				for(int j=0;j<id_apuesta_jugador.size();j++)
-				{
-					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_jugador.get(j)));
+				{					
+					cuota=String.valueOf(comprobarApuestaPichichi(id_apuesta_jugador.get(j)));
 					sc.sendRobust(apuestaFinalizada(id_apuesta_jugador.get(j).toString(),cuota));
+					sc.cleanupTransport();
+				}
+				for(int j=0;j<id_apuesta_partido.size();j++)
+				{					
+					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(j)));
+					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(j).toString(),cuota));
 					sc.cleanupTransport();
 				}
 			}
