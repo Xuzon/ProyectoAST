@@ -11,23 +11,30 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.engine.ServiceLifeCycle;
 import org.apache.log4j.varia.NullAppender;
+
+import com.sun.xml.internal.ws.client.Stub;
 
 
 public class Gohan implements ServiceLifeCycle {
@@ -77,7 +84,7 @@ public class Gohan implements ServiceLifeCycle {
 	@Override
 	public void startUp(ConfigurationContext arg0, AxisService arg1) {
 		log("Se ha iniciado el servicio.");
-		
+
 		//Buscamos en la web la dirección del servidor uddi real.
 		String ip_uddi = "";
 		try
@@ -92,7 +99,7 @@ public class Gohan implements ServiceLifeCycle {
 		 {
 			log(e.toString());
 		 }
-		
+	
 		String ip = "";
 		try{
 		    Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
@@ -111,7 +118,8 @@ public class Gohan implements ServiceLifeCycle {
 		 }catch(Exception e){
 			log(e.toString());
 		 }
-		
+		 
+		 
 		String access_point = "http://"+ip+":8080/axis2/services/"+service_name;
 		
 		try
@@ -122,6 +130,8 @@ public class Gohan implements ServiceLifeCycle {
 			//Instanciamos el servicio de cliente y las opciones
 			ServiceClient sc = new ServiceClient();
 			Options opts = new Options();
+			
+			//opts.setReplyTo(new EndpointReference());
 			
 			//Asignamos en las opciones la referencia al servicio propio.
 			opts.setTo(new EndpointReference(dir_uddi_security));
@@ -207,8 +217,6 @@ public class Gohan implements ServiceLifeCycle {
 		 {
 			log(e.toString());
 		 }
-		
-		
 		
 		log("Se ha finalizado el servicio.");
 	}
