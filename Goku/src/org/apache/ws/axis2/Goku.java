@@ -28,6 +28,7 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.ServiceLifeCycle;
 import org.apache.axis2.util.XMLUtils;
@@ -576,6 +577,18 @@ public class Goku implements ServiceLifeCycle {
 		Servicio Gohan = new Servicio(name_service_gohan);
 		
 		log("A finalizado la apuesta "+id_a+" con resultado "+result);
+		
+		//WS-ADDRESSING A EMAIL DEL MENSAJE SOAP
+		MessageContext mc = MessageContext.getCurrentMessageContext();//sacamos el contexto actual
+		if(mc != null){//comprobacion seguridad
+			String replyTo = mc.getReplyTo().toString();//sacamos a quien va dirigido
+			if(replyTo != null){//comprobacion seguridad
+				String from = "info@compuglobalhipermeganet.com";//correo nuestro
+				String asunto = "ApuestaFinalizada";//asunto
+				String txt = "<h1>Ha finalizado la apuesta "+id_a+"</h1></hr> <h3> con resultado: "+result + "</h3>";//el texto del email
+				HTMLEmail email = new HTMLEmail(replyTo,from,asunto,txt);//envio el email
+			}
+		}
 		
 		if(result>1)
 		 {

@@ -420,7 +420,6 @@ public class Gohan implements ServiceLifeCycle {
 		
 		//Si todo a sido correcto añadimos el importe a la tarjeta.
 		setSaldo(tarjeta, importe);
-		
 		return 1;
 	 }
 
