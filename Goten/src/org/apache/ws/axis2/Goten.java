@@ -620,6 +620,7 @@ public class Goten implements ServiceLifeCycle {
 		String cuota;
 		int id_partido_listado;
 		ArrayList <Integer> id_apuesta_partido= new ArrayList <Integer>();
+		ArrayList <String> correos = new ArrayList<String>();
 		File f = new File(directorio_apuestas+"/"+fichero_apuestas);
 		Servicio goku= new Servicio("Goku");
 		if(f.exists())
@@ -650,8 +651,10 @@ public class Goten implements ServiceLifeCycle {
 					if(datos_apuesta.startsWith("A"))
 					{
 						id_partido_listado = Integer.parseInt(datos_apuesta.split("//")[1]);
-						if(id_p == id_partido_listado)
+						if(id_p == id_partido_listado){
 							id_apuesta_partido.add(Integer.parseInt(id_a));
+							correos.add(datos_apuesta.split("//")[5]);//para el WS-ADDRESSING
+						}
 					}
 				}
 				in.close();
@@ -659,6 +662,8 @@ public class Goten implements ServiceLifeCycle {
 				for(int i=0;i<id_apuesta_partido.size();i++)
 				{					
 					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(i)));
+					opt.setReplyTo(new EndpointReference(correos.get(i)));//para el WS-ADDRESSING
+					sc.setOptions(opt);//se vuelven a aplicar las opciones al serviceclient
 					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(i).toString(),cuota));
 					sc.cleanupTransport();
 				}
@@ -683,6 +688,8 @@ public class Goten implements ServiceLifeCycle {
 		String cuota;
 		ArrayList <Integer> id_apuesta_partido= new ArrayList <Integer>();
 		ArrayList <Integer> id_apuesta_jugador= new ArrayList <Integer>();
+		ArrayList <String> correosPartidos = new ArrayList<String>();
+		ArrayList <String> correosJugadores = new ArrayList<String>();
 		File f = new File(directorio_apuestas+"/"+fichero_apuestas);
 		Servicio goku= new Servicio("Goku");
 		if(f.exists())
@@ -712,22 +719,28 @@ public class Goten implements ServiceLifeCycle {
 					if(datos_apuesta.startsWith("A"))
 					{
 						id_apuesta_partido.add(Integer.parseInt(id_a));
+						correosPartidos.add(datos_apuesta.split("//")[5]);
 					}
 					else
 					{
 						id_apuesta_jugador.add(Integer.parseInt(id_a));
+						correosJugadores.add(datos_apuesta.split("//")[3]);
 					}
 				}
 				in.close();
 				for(int j=0;j<id_apuesta_jugador.size();j++)
 				{					
 					cuota=String.valueOf(comprobarApuestaPichichi(id_apuesta_jugador.get(j)));
+					opt.setReplyTo(new EndpointReference(correosJugadores.get(j)));
+					sc.setOptions(opt);
 					sc.sendRobust(apuestaFinalizada(id_apuesta_jugador.get(j).toString(),cuota));
 					sc.cleanupTransport();
 				}
 				for(int j=0;j<id_apuesta_partido.size();j++)
 				{					
 					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(j)));
+					opt.setReplyTo(new EndpointReference(correosPartidos.get(j)));
+					sc.setOptions(opt);
 					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(j).toString(),cuota));
 					sc.cleanupTransport();
 				}

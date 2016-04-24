@@ -9,6 +9,7 @@ package org.apache.ws.axis2;
 import java.util.ArrayList;
 
 
+
 /**
  *  GokuSkeleton java skeleton for the axisService
  */
@@ -95,7 +96,6 @@ public class GokuSkeleton {
 		
 		//Creamos un objecto de la clase del servicio.
 		Goku g = new Goku();
-		
 		//Llamamos a la función pasandole los parámetros obtenidos
 		g.apuestaFinalizada(id_a, cuota_resultante);
 		
