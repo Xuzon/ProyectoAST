@@ -25,6 +25,7 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.ServiceLifeCycle;
 import org.apache.log4j.varia.NullAppender;
@@ -57,6 +58,8 @@ public class Goten implements ServiceLifeCycle {
 	//Contraseña para función hash
 	private static final String pass = "password";
 	
+	private static final String email_cliente = "cliente.apuesta@gmail.com";
+	
 	/**
 	 * Método que se ejecuta al iniciar el servicio en axis2.
 	 */
@@ -69,6 +72,8 @@ public class Goten implements ServiceLifeCycle {
 		String ip_uddi = "";
 		try
 		 {
+			arg1.engageModule(new AxisModule("Log"));
+
 			URL web = new URL("http://brudi.es/ast/uddi.txt");
 			BufferedReader in = new BufferedReader(new InputStreamReader(web.openStream()));
 			if((ip_uddi = in.readLine()) != null);
@@ -563,7 +568,7 @@ public class Goten implements ServiceLifeCycle {
 		cuota = Math.rint(cuota*100)/100;
 		
 		//Almacenamos la apuesta.
-		guardarApuesta(id_a, "A//"+id_p+"//"+goles_e1+"//"+goles_e2+"//"+cuota);
+		guardarApuesta(id_a, "A//"+id_p+"//"+goles_e1+"//"+goles_e2+"//"+cuota+"//"+email_cliente);
 		
 		return id_a;
 	 }
@@ -600,7 +605,7 @@ public class Goten implements ServiceLifeCycle {
 		cuota = Math.rint(cuota*100)/100;
 		
 		//Almacenamos los datos de la apuesta.
-		guardarApuesta(id_a, "B//"+jugador+"//"+cuota);
+		guardarApuesta(id_a, "B//"+jugador+"//"+cuota+"//"+email_cliente);
 		
 		return id_a;
 	}
@@ -629,10 +634,10 @@ public class Goten implements ServiceLifeCycle {
 			try
 			{
 				ServiceClient sc= new ServiceClient();
-				Options opt=new Options();
+				Options opt=null;
+				opt = new Options();
 				opt.setTo(new EndpointReference(goku.getEndpoint()));
 				opt.setAction("apuestaFinalizada");
-				sc.setOptions(opt);
 				
 				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
 				OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -658,13 +663,13 @@ public class Goten implements ServiceLifeCycle {
 					}
 				}
 				in.close();
-				log("hasta aqui");
+
 				for(int i=0;i<id_apuesta_partido.size();i++)
-				{					
+				{	
 					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(i)));
 					opt.setReplyTo(new EndpointReference(correos.get(i)));//para el WS-ADDRESSING
 					sc.setOptions(opt);//se vuelven a aplicar las opciones al serviceclient
-					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(i).toString(),cuota));
+					sc.fireAndForget(apuestaFinalizada(id_apuesta_partido.get(i).toString(),cuota));
 					sc.cleanupTransport();
 				}
 			}
@@ -700,7 +705,7 @@ public class Goten implements ServiceLifeCycle {
 				Options opt=new Options();
 				opt.setTo(new EndpointReference(goku.getEndpoint()));
 				opt.setAction("apuestaFinalizada");
-				sc.setOptions(opt);
+				//sc.setOptions(opt);
 								
 				//Insertamos la cabecera con el hash para autentificarnos en el sistema.
 				OMFactory fac = OMAbstractFactory.getOMFactory();
@@ -733,7 +738,7 @@ public class Goten implements ServiceLifeCycle {
 					cuota=String.valueOf(comprobarApuestaPichichi(id_apuesta_jugador.get(j)));
 					opt.setReplyTo(new EndpointReference(correosJugadores.get(j)));
 					sc.setOptions(opt);
-					sc.sendRobust(apuestaFinalizada(id_apuesta_jugador.get(j).toString(),cuota));
+					sc.fireAndForget(apuestaFinalizada(id_apuesta_jugador.get(j).toString(),cuota));
 					sc.cleanupTransport();
 				}
 				for(int j=0;j<id_apuesta_partido.size();j++)
@@ -741,7 +746,7 @@ public class Goten implements ServiceLifeCycle {
 					cuota=String.valueOf(comprobarApuestaPartido(id_apuesta_partido.get(j)));
 					opt.setReplyTo(new EndpointReference(correosPartidos.get(j)));
 					sc.setOptions(opt);
-					sc.sendRobust(apuestaFinalizada(id_apuesta_partido.get(j).toString(),cuota));
+					sc.fireAndForget(apuestaFinalizada(id_apuesta_partido.get(j).toString(),cuota));
 					sc.cleanupTransport();
 				}
 			}
