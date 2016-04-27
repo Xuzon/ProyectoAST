@@ -11,11 +11,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -28,13 +26,11 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.engine.ServiceLifeCycle;
 import org.apache.log4j.varia.NullAppender;
 
-import com.sun.xml.internal.ws.client.Stub;
 
 
 public class Gohan implements ServiceLifeCycle {
@@ -85,10 +81,14 @@ public class Gohan implements ServiceLifeCycle {
 	public void startUp(ConfigurationContext arg0, AxisService arg1) {
 		log("Se ha iniciado el servicio.");
 
+		
+		
 		//Buscamos en la web la dirección del servidor uddi real.
 		String ip_uddi = "";
 		try
 		 {
+			arg1.engageModule(new AxisModule("Log"));
+			
 			URL web = new URL("http://brudi.es/ast/uddi.txt");
 			BufferedReader in = new BufferedReader(new InputStreamReader(web.openStream()));
 			if((ip_uddi = in.readLine()) != null);
@@ -245,13 +245,17 @@ public class Gohan implements ServiceLifeCycle {
 		//Lectura de todos los saldos de tarjeta y carga en el mapa.
 		try
 		 {
-			in = new BufferedReader(new FileReader(dir+"/"+fichero_saldos));
-			String l_saldo="";
-			
-			while((l_saldo=in.readLine())!=null)
+			File f = new File(dir+"/"+fichero_saldos);
+			if(f.exists())
 			 {
-				if(l_saldo.equals("")) continue;
-				saldos.put(l_saldo.split("-.-")[0], Double.parseDouble(l_saldo.split("-.-")[1]));
+				in = new BufferedReader(new FileReader(f));
+				String l_saldo="";
+				
+				while((l_saldo=in.readLine())!=null)
+				 {
+					if(l_saldo.equals("")) continue;
+					saldos.put(l_saldo.split("-.-")[0], Double.parseDouble(l_saldo.split("-.-")[1]));
+				 }
 			 }
 		 }
 		catch(IOException ioe)
@@ -420,6 +424,7 @@ public class Gohan implements ServiceLifeCycle {
 		
 		//Si todo a sido correcto añadimos el importe a la tarjeta.
 		setSaldo(tarjeta, importe);
+		
 		return 1;
 	 }
 
