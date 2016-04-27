@@ -42,7 +42,7 @@ public class Cliente extends HttpServlet {
 		out.println("<div id='contido'>");
 		out.println("<div id='contido-int'>");
 		out.println("<h1>SHUT UP & TAKE MY MONEY</h1>");
-	
+
 		if(Goku.getError()==-100)
 			out.println("<h3>Error al intentar acceder al servidor de JUDDI</h3>");
 		else if(Goku.getError()==-101)
@@ -156,6 +156,7 @@ public class Cliente extends HttpServlet {
 		String jugador = req.getParameter("jugador");
 		String id_a_comp = req.getParameter("id_a");
 		//En caso de realizar una apuesta a un partido.
+
 		if(id_p_s!=null)
 		 {
 			int id_a=0;
@@ -190,7 +191,7 @@ public class Cliente extends HttpServlet {
 					 		break;
 					 	case -13: case -14: out.println("Error al almacenar la apuesta.");
 					 		break;
-					 	case -12: out.println("Error: El servicio de apuestas no responte");
+					 	case -12: out.println("Error: El servicio de apuestas no responde");
 					 		break;
 					 	case -110: case -120: case -130: case -140: out.println("Error: el servicio no encuentra el servidor juddi");
 					 		break;
@@ -211,7 +212,7 @@ public class Cliente extends HttpServlet {
 			 }
 			catch(Exception e)
 			 {
-				//out.println(e.toString());
+				out.println(e.toString());
 				e.printStackTrace();
 			 }
 		 }
@@ -247,8 +248,8 @@ public class Cliente extends HttpServlet {
 					 		break;
 					 	case -13: case -14: out.println("Error al almacenar la apuesta.");
 					 		break;
-					 	case -12: out.println("Error: El servicio de apuestas no responte");
-				 		break;
+					 	case -12: out.println("Error: El servicio de apuestas no responde");
+				 			break;
 					 	case -110: case -120: case -130: case -140: out.println("Error: el servicio no encuentra el servidor juddi");
 				 			break;
 					 	case -111: out.println("Error: no se encuentra listado el servicio Gohan en el servidor uddi");
@@ -299,11 +300,11 @@ public class Cliente extends HttpServlet {
 					 		break;
 					 	case -2: case -3: case -12: out.println("Error con el identificador de la apuesta al partido");
 					 		break;
-					 	case -11:  out.println("Error: El servicio de apuestas no responte");
+					 	case -11:  out.println("Error: El servicio de apuestas no responde");
 				 			break;
 					 	case -5: case -6: case -7: case -14: out.println("Error con el identificador de la apuesta al pichichi");
 					 		break;
-					 	case -13:  out.println("Error: El servicio de apuestas no responte");
+					 	case -13:  out.println("Error: El servicio de apuestas no responde");
 					 		break;
 					 	case -15: out.println("No se reconoce el tipo de apuesta.");
 					 		break;
