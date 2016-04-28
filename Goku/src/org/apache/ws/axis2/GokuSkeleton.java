@@ -9,7 +9,6 @@ package org.apache.ws.axis2;
 import java.util.ArrayList;
 
 
-
 /**
  *  GokuSkeleton java skeleton for the axisService
  */
@@ -89,13 +88,14 @@ public class GokuSkeleton {
      */
     public void apuestaFinalizada(
         org.apache.ws.axis2.ApuestaFinalizada apuestaFinalizada) {
-		    	
+   	
 		//Recuperamos los argumentos de entrada.
 		int id_a = apuestaFinalizada.getId_apuesta();
 		double cuota_resultante = apuestaFinalizada.getCuota_resultante();
 		
 		//Creamos un objecto de la clase del servicio.
 		Goku g = new Goku();
+		
 		//Llamamos a la función pasandole los parámetros obtenidos
 		g.apuestaFinalizada(id_a, cuota_resultante);
 		
@@ -163,12 +163,13 @@ public class GokuSkeleton {
      	double importe = apostarPartido.getImporte();
      	String tarjeta = apostarPartido.getTarjeta();
      	String f_cad = apostarPartido.getF_cad();
+     	String email = apostarPartido.getEmail();
      	
      	//Creamos un objecto de la clase del servicio.
      	Goku g = new Goku();
      	
      	//Llamamos a la función pasandole los parámetros obtenidos
-     	salida = g.apostarPartido(id_p, goles_e1, goles_e2, importe, tarjeta, f_cad);
+     	salida = g.apostarPartido(id_p, goles_e1, goles_e2, importe, tarjeta, f_cad, email);
 
 
      	//Añadimos al objeto que retornamos la salida de la función.   	
@@ -196,12 +197,13 @@ public class GokuSkeleton {
      	double importe = apostarPichichi.getImporte();
      	String tarjeta = apostarPichichi.getTarjeta();
      	String f_cad = apostarPichichi.getF_cad();
+     	String email = apostarPichichi.getEmail();
      	
      	//Creamos un objecto de la clase del servicio.
      	Goku g = new Goku();
      	
      	//Llamamos a la función pasandole los parámetros obtenidos
-     	salida = g.apostarPichichi(jugador, importe, tarjeta, f_cad);
+     	salida = g.apostarPichichi(jugador, importe, tarjeta, f_cad, email);
 
 
      	//Añadimos al objeto que retornamos la salida de la función.   	

@@ -346,7 +346,7 @@ public class Goku implements ServiceLifeCycle {
 	 * @param f_cad -> Fecha de caducidad de la tarjeta proporcionada.
 	 * @return Identificador de la apuesta que se ha realizado.
 	 */
-	public int apostarPartido(int id_p, int goles_e1, int goles_e2, double importe, String tarjeta, String f_cad)
+	public int apostarPartido(int id_p, int goles_e1, int goles_e2, double importe, String tarjeta, String f_cad, String email)
 	 {
 		int id_a=0, error=0;
 		importe = Math.rint(importe*100)/100;
@@ -415,7 +415,7 @@ public class Goku implements ServiceLifeCycle {
 			cabeceraHash.setText(pass.hashCode()+"");
 			sc.addHeader(cabeceraHash);
 			
-			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+""));
+			OMElement res_apuesta = sc.sendReceive(realizarApuestaPartido(id_p+"", goles_e1+"", goles_e2+"", email));
 			
 			//Obtengo del OMElement el id de apuesta.
 			id_a = Integer.parseInt(res_apuesta.getFirstElement().getText());
@@ -453,7 +453,7 @@ public class Goku implements ServiceLifeCycle {
 	 * @param f_cad -> Fecha de caducidad de la tarjeta proporcionada.
 	 * @return Identificador de la apuesta que se ha realizado.
 	 */
-	public int apostarPichichi(String jugador, double importe, String tarjeta, String f_cad)
+	public int apostarPichichi(String jugador, double importe, String tarjeta, String f_cad, String email)
 	 {
 		int id_a=0, error=0;
 		importe = Math.rint(importe*100)/100;
@@ -528,7 +528,7 @@ public class Goku implements ServiceLifeCycle {
 			cabeceraHash.setText(pass.hashCode()+"");
 			sc.addHeader(cabeceraHash);
 			
-			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador));			
+			OMElement res = sc.sendReceive(realizarApuestaPichichi(jugador, email));			
 			
 			//Obtengo del OMElement el id de apuesta.
 			id_a = Integer.parseInt(res.getFirstElement().getText());
@@ -1163,7 +1163,7 @@ public class Goku implements ServiceLifeCycle {
 		return method;
 	 }
 	
-	private OMElement realizarApuestaPartido(String valor1, String valor2, String valor3)
+	private OMElement realizarApuestaPartido(String valor1, String valor2, String valor3, String valor4)
 	 {
 		OMFactory fac = OMAbstractFactory.getOMFactory();
 		OMNamespace omNs = fac.createOMNamespace( "", "");
@@ -1174,20 +1174,26 @@ public class Goku implements ServiceLifeCycle {
 		value2.setText(valor2);
 		OMElement value3 = fac.createOMElement("goles_e2", omNs);
 		value3.setText(valor3);
+		OMElement value4 = fac.createOMElement("email", omNs);
+		value4.setText(valor4);
 		method.addChild(value1);
 		method.addChild(value2);
 		method.addChild(value3);
+		method.addChild(value4);
 		return method;
 	 }
 	
-	private OMElement realizarApuestaPichichi(String valor)
+	private OMElement realizarApuestaPichichi(String valor1, String valor2)
 	 {
 		OMFactory fac = OMAbstractFactory.getOMFactory();
 		OMNamespace omNs = fac.createOMNamespace( "", "");
 		OMElement method = fac.createOMElement("realizarApuestaPichichi", omNs);
-		OMElement value = fac.createOMElement("jugador", omNs);
-		value.setText(valor);
-		method.addChild(value);
+		OMElement value1 = fac.createOMElement("jugador", omNs);
+		value1.setText(valor1);
+		OMElement value2 = fac.createOMElement("email", omNs);
+		value2.setText(valor2);
+		method.addChild(value1);
+		method.addChild(value2);
 		return method;
 	 }
 	

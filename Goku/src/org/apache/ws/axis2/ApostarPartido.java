@@ -59,6 +59,17 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
     protected boolean localF_cadTracker = false;
 
     /**
+     * field for Email
+     */
+    protected java.lang.String localEmail;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localEmailTracker = false;
+
+    /**
      * Auto generated getter method
      * @return int
      */
@@ -164,6 +175,28 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
         localF_cadTracker = true;
 
         this.localF_cad = param;
+    }
+
+    public boolean isEmailSpecified() {
+        return localEmailTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return java.lang.String
+     */
+    public java.lang.String getEmail() {
+        return localEmail;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param Email
+     */
+    public void setEmail(java.lang.String param) {
+        localEmailTracker = true;
+
+        this.localEmail = param;
     }
 
     /**
@@ -294,6 +327,22 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
                     xmlWriter);
             } else {
                 xmlWriter.writeCharacters(localF_cad);
+            }
+
+            xmlWriter.writeEndElement();
+        }
+
+        if (localEmailTracker) {
+            namespace = "http://ws.apache.org/axis2";
+            writeStartElement(null, namespace, "email", xmlWriter);
+
+            if (localEmail == null) {
+                // write the nil attribute
+                writeAttribute("xsi",
+                    "http://www.w3.org/2001/XMLSchema-instance", "nil", "1",
+                    xmlWriter);
+            } else {
+                xmlWriter.writeCharacters(localEmail);
             }
 
             xmlWriter.writeEndElement();
@@ -743,6 +792,34 @@ public class ApostarPartido implements org.apache.axis2.databinding.ADBBean {
                         java.lang.String content = reader.getElementText();
 
                         object.setF_cad(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                content));
+                    } else {
+                        reader.getElementText(); // throw away text nodes if any.
+                    }
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName(
+                            "http://ws.apache.org/axis2", "email").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "email").equals(
+                            reader.getName())) {
+                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                            "nil");
+
+                    if (!"true".equals(nillableValue) &&
+                            !"1".equals(nillableValue)) {
+                        java.lang.String content = reader.getElementText();
+
+                        object.setEmail(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                 content));
                     } else {
                         reader.getElementText(); // throw away text nodes if any.
