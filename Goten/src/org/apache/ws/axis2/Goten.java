@@ -58,7 +58,8 @@ public class Goten implements ServiceLifeCycle {
 	//Contraseña para función hash
 	private static final String pass = "password";
 	
-	private static final String email_cliente = "cliente.apuesta@gmail.com";
+	//Dirección de email por defecto del cliente en caso de no existir
+	private static final String email_cliente_default = "cliente.apuesta@gmail.com";
 	
 	/**
 	 * Método que se ejecuta al iniciar el servicio en axis2.
@@ -544,9 +545,10 @@ public class Goten implements ServiceLifeCycle {
 	 * @param goles_e2 -> Goles del equipo visitante.
 	 * @return -> Retorna el identificador con el que se a almacenado la apuesta.
 	 */
-	public int realizarApuestaPartido(int id_p, int goles_e1, int goles_e2)
+	public int realizarApuestaPartido(int id_p, int goles_e1, int goles_e2, String email)
 	 {
 		double cuota=0;
+		String email_cliente="";
 		
 		//Obtenemos el nuevo identificador de la apuesta.
 		String sid_a = verApuesta("0");
@@ -567,6 +569,11 @@ public class Goten implements ServiceLifeCycle {
 		//Redondeamos la cuota a 2 decimales
 		cuota = Math.rint(cuota*100)/100;
 		
+		if(email.equals("") || email == null)
+			email_cliente = email_cliente_default;
+		else
+			email_cliente = email;
+		
 		//Almacenamos la apuesta.
 		guardarApuesta(id_a, "A//"+id_p+"//"+goles_e1+"//"+goles_e2+"//"+cuota+"//"+email_cliente);
 		
@@ -579,9 +586,10 @@ public class Goten implements ServiceLifeCycle {
 	 * @param jugador -> Nombre del jugador por el que se quiere apostar.
 	 * @return -> Retorna el identificador con el que se a almacenado la apuesta.
 	 */
-	public int realizarApuestaPichichi(String jugador)
+	public int realizarApuestaPichichi(String jugador, String email)
 	 {
 		double cuota=0;
+		String email_cliente="";
 		
 		//Obtenemos el nuevo identificador de la apuesta.
 		String sid_a = verApuesta("0");
@@ -603,6 +611,12 @@ public class Goten implements ServiceLifeCycle {
 		while((cuota=Math.random()*25+1)==1);
 		//Redondeamos la cuota a 2 decimales
 		cuota = Math.rint(cuota*100)/100;
+		
+		if(email.equals("") || email == null)
+			email_cliente = email_cliente_default;
+		else
+			email_cliente = email;
+		
 		
 		//Almacenamos los datos de la apuesta.
 		guardarApuesta(id_a, "B//"+jugador+"//"+cuota+"//"+email_cliente);

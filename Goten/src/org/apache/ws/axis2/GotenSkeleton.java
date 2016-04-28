@@ -26,12 +26,13 @@ public class GotenSkeleton {
     	int id_p = realizarApuestaPartido.getId_partido();
     	int goles_e1 = realizarApuestaPartido.getGoles_e1();
     	int goles_e2 = realizarApuestaPartido.getGoles_e2();
+    	String email = realizarApuestaPartido.getEmail();
 
     	//Creamos un objecto de la clase del servicio.
     	Goten g = new Goten();
     	
     	//Llamamos a la función pasandole los parámetros obtenidos y almacenamos lo que nos devuelve.
-    	salida = g.realizarApuestaPartido(id_p, goles_e1, goles_e2);
+    	salida = g.realizarApuestaPartido(id_p, goles_e1, goles_e2, email);
     	
     	//Modificamos el objeto que devemos devolver añadiendole lo que recuperamos de la función anterior.
     	ret.setId_apuesta(salida);
@@ -102,12 +103,13 @@ public class GotenSkeleton {
     	
     	//Recuperamos los argumentos de entrada.
     	String jugador = realizarApuestaPichichi.getJugador();
+    	String email = realizarApuestaPichichi.getEmail();
 
     	//Creamos un objecto de la clase del servicio.
     	Goten g = new Goten();
     	
     	//Llamamos a la función pasandole los parámetros obtenidos y almacenamos lo que nos devuelve.
-    	salida = g.realizarApuestaPichichi(jugador);
+    	salida = g.realizarApuestaPichichi(jugador, email);
     	
     	//Modificamos el objeto que devemos devolver añadiendole lo que recuperamos de la función anterior.
     	ret.setId_apuesta(salida);
